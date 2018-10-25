@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Portal.Persistence;
 
 namespace Portal.MVC
 {
@@ -30,6 +33,15 @@ namespace Portal.MVC
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            
+            services.AddDbContext<PortalContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<DbUser, IdentityRole<int>>()
+                .AddEntityFrameworkStores<PortalContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddMvc();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -48,7 +60,6 @@ namespace Portal.MVC
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
@@ -58,6 +69,10 @@ namespace Portal.MVC
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            
+            var news = app.ApplicationServices.GetRequiredService<PortalContext>();
+
+            DbInitializer.Initialize(news);
         }
     }
 }

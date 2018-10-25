@@ -15,13 +15,14 @@ namespace Portal.Persistence
         Small
     }
 
-    public class ArticleImage
+    public class ItemImage
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         //[ForeignKey("Article")]
         [Required]
-        public Item Article { get; set; }
+        public Item Item { get; set; }
         [Required]
         public byte[] ImageData { get; set; }
 

@@ -8,18 +8,18 @@ namespace Portal.Persistence
     public class Bid
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id;
+        public int Id { get; set; }
 
         [Required]
-        public Item Item;
+        public Item Item { get; set; }
 
         [Required]
-        public User User;
+        public User User { get; set; }
 
         [Required]
-        public int Amout;
+        public int Amout { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime Date;
+        public DateTime PutDate { get; set; }
     }
 }

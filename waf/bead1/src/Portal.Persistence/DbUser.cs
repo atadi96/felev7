@@ -5,18 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Portal.Persistence
 {
-    public class Category
+    public class DbUser : IdentityUser<int>
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         [Required]
         public string Name { get; set; }
-        public HashSet<Item> Items { get; set; }
 
-        public Category()
+        public HashSet<Bid> Bids { get; set; }
+
+        public DbUser() : base()
         {
-            Items = new HashSet<Item>();
+            Bids = new HashSet<Bid>();
         }
     }
 }
