@@ -14,12 +14,17 @@ namespace Portal.Persistence
         public Item Item { get; set; }
 
         [Required]
-        public User User { get; set; }
+        public DbUser User { get; set; }
 
         [Required]
         public int Amout { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime PutDate { get; set; }
+
+        public Bid()
+        {
+            PutDate = DateTime.Now;
+        }
     }
 }

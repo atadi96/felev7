@@ -37,7 +37,15 @@ namespace Portal.MVC
             services.AddDbContext<PortalContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<DbUser, IdentityRole<int>>()
+            services.AddIdentity<DbUser, IdentityRole<int>>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 4;
+                    options.Password.RequiredUniqueChars = 0;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<PortalContext>()
                 .AddDefaultTokenProviders();
 
@@ -62,6 +70,7 @@ namespace Portal.MVC
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

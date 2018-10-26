@@ -5,14 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Portal.MVC.Models;
+using Portal.MVC.Services;
 
 namespace Portal.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(HomeViewModel vm, PortalService service)
         {
-            return View();
+            vm.UpdatePageContents(service.HomeItems(vm.ItemSearch, vm.Category));
+            return View("Index", vm);
         }
 
         public IActionResult About()
