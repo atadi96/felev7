@@ -28,6 +28,9 @@ namespace Portal.Persistence
                 .HasMany(user => user.Bids)
                 .WithOne(bid => bid.User)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Item>()
+                .Property(item => item.PublishDate)
+                .HasDefaultValueSql("getdate()");
         }
     }
 }

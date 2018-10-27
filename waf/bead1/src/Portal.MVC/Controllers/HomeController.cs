@@ -24,6 +24,11 @@ namespace Portal.MVC.Controllers
             return View("Index", vm);
         }
 
+        public IActionResult Item(int id)
+        {
+            return View("Item", portalService.GetItemForId(id));
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
