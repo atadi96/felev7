@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Portal.MVC.Services;
 using Portal.Persistence;
 
 namespace Portal.MVC
@@ -27,13 +28,6 @@ namespace Portal.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            
             services.AddDbContext<PortalContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -48,6 +42,8 @@ namespace Portal.MVC
                 })
                 .AddEntityFrameworkStores<PortalContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddTransient<PortalService>();
 
             services.AddMvc();
 
@@ -78,10 +74,19 @@ namespace Portal.MVC
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            
-            var news = app.ApplicationServices.GetRequiredService<PortalContext>();
 
-            DbInitializer.Initialize(news);
+            var portalContext = app.ApplicationServices.GetRequiredService<PortalContext>();
+
+            if(Configuration.GetValue<bool>("seed"))
+            {
+                portalContext.Database.EnsureDeleted();
+            }
+
+            portalContext.Database.EnsureCreated();
+
+            var userManager = app.ApplicationServices.GetRequiredService<UserManager<DbUser>>();
+
+            DbInitializer.Initialize(portalContext, userManager);
         }
     }
 }

@@ -20,9 +20,14 @@ namespace Portal.Persistence
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            //builder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             builder.Entity<Bid>()
                 .Property(bid => bid.PutDate)
                 .HasDefaultValueSql("getdate()");
+            builder.Entity<DbUser>()
+                .HasMany(user => user.Bids)
+                .WithOne(bid => bid.User)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

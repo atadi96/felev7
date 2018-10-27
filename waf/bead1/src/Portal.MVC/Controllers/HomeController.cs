@@ -11,9 +11,16 @@ namespace Portal.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(HomeViewModel vm, PortalService service)
+        private readonly PortalService portalService;
+
+        public HomeController(PortalService portalService)
         {
-            vm.UpdatePageContents(service.HomeItems(vm.ItemSearch, vm.Category));
+            this.portalService = portalService;
+        }
+        public IActionResult Index(HomeViewModel vm)
+        {
+            vm.UpdatePageContents(portalService.HomeItems(vm.ItemSearch, vm.Category));
+            vm.Categories = portalService.CategorySelectList();
             return View("Index", vm);
         }
 
