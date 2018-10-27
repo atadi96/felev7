@@ -41,7 +41,10 @@ namespace Portal.MVC.Services
                 .Select(item =>
                     new ItemPreviewViewModel(
                         item,
-                        item.Bids.Select(bid => bid.Amout).Max()
+                        item.Bids
+                            .Select(bid => bid.Amout)
+                            .DefaultIfEmpty(item.InitLicit)
+                            .Max()
                     )
                 );
         public IEnumerable<SelectListItem> CategorySelectList() =>

@@ -57,16 +57,20 @@ namespace Portal.Persistence
         private static void Init()
         {
             InitCategories();
-            DbUser publisher1 = new DbUser
+            Publishers.Furniture = new DbUser
             {
                 Name = "Furniture Publisher",
                 UserName = "furn"
             };
-            DbUser publisher2 = new DbUser
+            Publishers.Instrument = new DbUser
             {
                 Name = "Instrument Publisher",
                 UserName = "inst"
             };
+            portalContext.Users.AddRange(
+                new DbUser[] { Publishers.Furniture, Publishers.Instrument }
+            );
+            portalContext.SaveChanges();
             InitFurniture();
             InitInstrument();
         }
@@ -112,7 +116,9 @@ namespace Portal.Persistence
                 Publisher = Publishers.Instrument,
                 Image = null,
             };
-            
+            portalContext.Items.AddRange(
+                new Item[] { Items.LP100, Items.Amp }
+            );
         }
 
         private static void InitFurniture()
@@ -127,6 +133,19 @@ namespace Portal.Persistence
                 Publisher = Publishers.Furniture,
                 Image = null,
             };
+            Items.Farewell = new Item
+            {
+                Category = Categories.Other,
+                Name = "Farewell",
+                Description = "old friend",
+                Expiration = DateTime.Now.AddDays(1001),
+                InitLicit = 1,
+                Publisher = Publishers.Furniture,
+                Image = null,
+            };
+            portalContext.Items.AddRange(
+                new Item[] { Items.Desk, Items.Farewell }
+            );
         }
     }
 
