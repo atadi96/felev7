@@ -56,5 +56,29 @@ namespace Portal.MVC.Services
             DbUser user = await userManager.GetUserAsync(httpContext.User);
             return user;
         }
+
+        public ItemViewModel GetItemForId(int id) =>
+            portalContext.Items
+                .Include(item => item.Bids)
+                .Include(item => item.Publisher)
+                .Include(item => item.Category)
+                .Where(item => item.Id == id)
+                .Select(item => new ItemViewModel
+                    {
+                        Category = item.Category.Name,
+                        Description = item.Description,
+                        Expiration = item.Expiration,
+                        Publisher = item.Publisher.Name,
+                        Name = item.Name,
+                        Image = item.Image,
+                        PublishDate = item.PublishDate,
+                        CurrentLicit =
+                            item.Bids
+                                .Select(bid => bid.Amout)
+                                .DefaultIfEmpty(item.InitLicit)
+                                .Max()
+                    }
+                )
+                .FirstOrDefault();
     }
 }

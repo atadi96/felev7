@@ -31,10 +31,14 @@ namespace Portal.Persistence
         public HashSet<Bid> Bids { get; set; }
 
         [Required]
+        public DateTime PublishDate { get; set; }
+
+        [Required]
         public DateTime Expiration { get; set; }
 
         public Item()
         {
+            PublishDate = DateTime.Now;
             Bids = new HashSet<Bid>();
         }
     }
