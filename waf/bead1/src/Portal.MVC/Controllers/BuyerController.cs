@@ -29,6 +29,36 @@ namespace Portal.MVC.Controllers
             }
             else return null;
         }
+
+        [HttpGet]
+        public IActionResult Login(BuyerLoginViewModel vm)
+        {
+            return View("Login", vm);
+        }
+
+        [HttpPost]
+        public IActionResult LoginPost([Bind("UserName", "Password")]BuyerLoginViewModel vm)
+        {
+            var esc = EscapeIfLoggedIn();
+            if (esc is null)
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = buyerService.SignIn(vm.UserName, vm.Password);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(HomeController.Index), "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Could not sign in");
+                    }
+                }
+                vm.Password = "";
+                return RedirectToAction(nameof(Login), vm);
+            }
+            else return esc;
+        }
         public ActionResult Index()
         {
             return RedirectToActionPermanent(nameof(Register));
