@@ -15,6 +15,20 @@ namespace Portal.MVC.Controllers
     public class BuyerController : Controller
     {
         private readonly BuyerService buyerService;
+
+        public BuyerController(BuyerService buyerService)
+        {
+            this.buyerService = buyerService;
+        }
+
+        private ActionResult EscapeIfLoggedIn()
+        {
+            if (!(buyerService.CurrentDbUser() is null))
+            {
+                return RedirectToActionPermanent(nameof(HomeController.Index), "Home");
+            }
+            else return null;
+        }
         public ActionResult Index()
         {
             return RedirectToActionPermanent(nameof(Register));
@@ -22,7 +36,7 @@ namespace Portal.MVC.Controllers
 
         public ActionResult Register(BuyerViewModel vm)
         {
-            return View("Register", vm);
+            return EscapeIfLoggedIn() ?? View("Register", vm);
         }
 
         // POST: Buyer/Create
@@ -30,32 +44,40 @@ namespace Portal.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind("Name", "UserName", "Email", "PhoneNumber", "Password")]BuyerViewModel vm)
         {
-            try
+            var esc = EscapeIfLoggedIn();
+            if(esc is null)
             {
-                if(ModelState.IsValid)
+                try
                 {
-                    var result = buyerService.Register(vm);
-                    if(result.Succeeded)
+                    if(ModelState.IsValid)
                     {
-                        return RedirectToAction(nameof(HomeController.Index), "Home");
+                        var result = buyerService.Register(vm);
+                        if(result.Succeeded)
+                        {
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+                        }
+                        else
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return View(nameof(Register), vm);
+                        }
                     }
                     else
                     {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
                         return View(nameof(Register), vm);
                     }
                 }
-                else
+                catch
                 {
-                    return View(nameof(Register), vm);
+                    return View();
                 }
             }
-            catch
+            else
             {
-                return View();
+                return esc;
             }
         }
 

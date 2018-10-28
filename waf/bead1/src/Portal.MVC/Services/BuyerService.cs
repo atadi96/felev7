@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Portal.MVC.Models;
 using Portal.Persistence;
@@ -10,12 +12,23 @@ namespace Portal.MVC.Services
         private readonly UserManager<DbUser> userManager;
         private readonly SignInManager<DbUser> signInManager;
         private readonly RoleManager<DbUser> roleManager;
+        private readonly HttpContext httpContext;
 
-        public BuyerService(UserManager<DbUser> userManager, SignInManager<DbUser> signInManager, RoleManager<DbUser> roleManager)
-        {
+        public BuyerService(
+            IHttpContextAccessor ctxAcc,
+            UserManager<DbUser> userManager,
+            SignInManager<DbUser> signInManager
+            //RoleManager<DbUser> roleManager
+        ) {
+            this.httpContext = ctxAcc.HttpContext;
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.roleManager = roleManager;
+            //this.roleManager = roleManager;
+        }
+
+        public DbUser CurrentDbUser() {
+            DbUser user = userManager.GetUserAsync(httpContext.User).Result;
+            return user;
         }
 
         public IdentityResult Register(BuyerViewModel vm)
@@ -31,7 +44,15 @@ namespace Portal.MVC.Services
             var result = userManager.CreateAsync(newUser, vm.Password).Result;
             if(result.Succeeded)
             {
-                signInManager.SignInAsync(newUser, isPersistent: false);
+                var roleResult = userManager.AddToRoleAsync(newUser, "buyer").Result;
+                if (roleResult.Succeeded)
+                {
+                    signInManager.SignInAsync(newUser, isPersistent: false);
+                }
+                else
+                {
+                    return roleResult;
+                }
             }
             return result;
         }

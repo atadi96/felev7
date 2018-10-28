@@ -44,6 +44,7 @@ namespace Portal.MVC
                 .AddDefaultTokenProviders();
 
             services.AddTransient<PortalService>();
+            services.AddTransient<BuyerService>();
 
             services.AddMvc();
 
@@ -72,7 +73,8 @@ namespace Portal.MVC
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}"
+                );
             });
 
             var portalContext = app.ApplicationServices.GetRequiredService<PortalContext>();

@@ -33,14 +33,14 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     @if(ViewData["CurrentUser"] as Portal.Persistence.DbUser is null)
                     {
-                        <li><a asp-area="" asp-controller="User" asp-action="SignIn">Sign In</a></li>
-                        <li><a asp-area="" asp-controller="User" asp-action="Register">Register</a></li>
+                        <li><a asp-area="" asp-controller="Buyer" asp-action="SignIn">Sign In</a></li>
+                        <li><a asp-area="" asp-controller="Buyer" asp-action="Register">Register</a></li>
                     }
                     else
                     {
                         <li><a asp-area="" asp-controller="Home" asp-action="MyItems">My Items</a></li>
                         <li>Hello, @((ViewData["CurrentUser"] as Portal.Persistence.DbUser).UserName)!
-                            <a asp-controller="User" asp-action="Logout">Sign Out</a>
+                            <a asp-controller="Buyer" asp-action="Logout">Sign Out</a>
                         </li>
                     }
                 </ul>
