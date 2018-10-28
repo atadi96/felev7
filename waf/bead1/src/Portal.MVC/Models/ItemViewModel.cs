@@ -9,13 +9,17 @@ namespace Portal.MVC.Models
 {
     public class ItemViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
 
         public string Category { get; set; }
 
         public string Description { get; set; }
 
-        public int CurrentLicit { get; set; }
+        [DisplayName("Initial Licit")]
+        public int InitLicit { get; set; }
+
+        public int? CurrentLicit { get; set; }
 
         public byte[] Image { get; set; }
 

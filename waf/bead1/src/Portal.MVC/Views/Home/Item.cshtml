@@ -26,16 +26,25 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.InitLicit)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InitLicit)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.CurrentLicit)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CurrentLicit)
+            @(Model.CurrentLicit?.ToString() ?? "-")
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Image)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Image)
+            @if(Model.Image != null)
+            {
+            <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" width="200"/> 
+            }
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Publisher)
@@ -57,6 +66,28 @@
         </dd>
     </dl>
 </div>
+@if(ViewData["CurrentUser"] != null && Model.Expiration > System.DateTime.Now)
+{
+<div>
+    <h4>Place a bid!</h4>
+    <form asp-action="PlaceBid" asp-controller="Home" method="post">
+        <div class="form-group">
+            <label for="amount" class="control-label">Amount</label>
+            <input
+                class="form-control"
+                id="amount"
+                name="BidAmount"
+                type="number"
+                value="@(Model.CurrentLicit ?? Model.InitLicit)"
+                @(Model.CurrentLicit is null ? "" : "")>
+            <input type="hidden" name="ItemId" value="@Model.Id">
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Place Bid">
+        </div>
+    </form>
+</div>
+}
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

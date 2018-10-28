@@ -1,0 +1,33 @@
+@using Portal.MVC.Models
+@model IEnumerable<MyItemsViewModel>
+
+<div>
+    <h3>My Items</h3>
+    <div id="item-previews">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Publisher</th>
+                    <th>Current bid</th>
+                    <th>Valid</th>
+                    <th>Winning</th>
+                </tr>
+            </thead>
+            @foreach(MyItemsViewModel item in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("Item", "Home", new { id = item.Item.Id})">
+                            @item.Item.Name
+                        </a>
+                    </td>
+                    <td>@item.Item.Publisher</td>
+                    <td>@item.Item.CurrentBid</td>
+                    <td>@(item.Active ? "Yes" : "")</td>
+                    <td>@(item.Item.CurrentBid == item.OwnBid ? "Yes" : "")</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+@using Portal.MVC.Models
+@model IEnumerable<ItemPreviewViewModel>
+
+<div>
+    <div id="item-previews">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Publisher</th>
+                    <th>Current bid</th>
+                </tr>
+            </thead>
+            @foreach(ItemPreviewViewModel item in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("Item", "Home", new { id = item.Id})">
+                            @item.Name
+                        </a>
+                    </td>
+                    <td>@item.Publisher</td>
+                    <td>@item.CurrentBid</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

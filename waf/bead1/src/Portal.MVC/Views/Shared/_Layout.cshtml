@@ -31,7 +31,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    @if(ViewData["CurrentUser"] as Portal.Persistence.DbUser is null)
+                    @if(ViewData["CurrentUser"] as string is null)
                     {
                         <li><a asp-area="" asp-controller="Buyer" asp-action="Login">Sign In</a></li>
                         <li><a asp-area="" asp-controller="Buyer" asp-action="Register">Register</a></li>
@@ -39,7 +39,7 @@
                     else
                     {
                         <li><a asp-area="" asp-controller="Home" asp-action="MyItems">My Items</a></li>
-                        <li><p class="navbar-text">Hello, @((ViewData["CurrentUser"] as Portal.Persistence.DbUser).UserName)!</p></li>
+                        <li><p class="navbar-text">Hello, @(ViewData["CurrentUser"] as string)!</p></li>
                         <li class="navbar-right">
                             <form class="navbar-form" asp-controller="Buyer" asp-action="Logout">
                                 <input class="btn btn-default" type="submit" value="Sign Out">

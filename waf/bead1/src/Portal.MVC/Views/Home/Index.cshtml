@@ -12,9 +12,18 @@
                 <label for="item-search">Search name:</label>
                 <input class="form-control" id="item-search" type="text" asp-for="ItemSearch" value="@Model.ItemSearch">
                 <label for="category">Select category:</label>
-                @Html.DropDownListFor(model => model.Category, Model.Categories, new{@class="form-control"})
+                @Html.DropDownListFor(model => model.Category, Model.Categories.Prepend(new SelectListItem("-- Any --", "")), new{@class="form-control"})
             </div>
             <input class="btn btn-primary" type="submit" value="Search">
+        </form>
+    </div>
+    <div>
+        <form class="form-inline" asp-controller="Home" asp-action="Category" method="get">
+            <div class="form-group">
+                <label for="category">All items in category:</label>
+                @Html.DropDownList("id", Model.Categories, new{@class="form-control"})
+            </div>
+            <input class="btn btn-primary" type="submit" value="List items">
         </form>
     </div>
     <div id="item-previews">

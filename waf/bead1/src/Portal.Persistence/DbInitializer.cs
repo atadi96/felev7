@@ -32,15 +32,17 @@ namespace Portal.Persistence
         }
         private static class Users
         {
-            public static Item CheapBuyer;
-            public static Item BigBuyer;
+            public static DbUser CheapBuyer;
+            public static DbUser BigBuyer;
         }
+        private static UserManager<DbUser> userManager;
         private static PortalContext portalContext;
         public static void Initialize(
             PortalContext context,
             UserManager<DbUser> userManager/*,
             RoleManager<IdentityRole<string>> roleManager */
         ) {
+            DbInitializer.userManager = userManager;
             portalContext = context;
 
             portalContext.Database.EnsureCreated();
@@ -85,9 +87,39 @@ namespace Portal.Persistence
             portalContext.Users.AddRange(
                 new DbUser[] { Publishers.Furniture, Publishers.Instrument }
             );
+            Users.CheapBuyer = new DbUser
+            {
+                UserName = "cheap",
+                Name = "Cheap Cheap",
+                Email = "ch@ch.ch",
+                PhoneNumber = "asdf"
+            };
+
+            var result = userManager.CreateAsync(Users.CheapBuyer, "cheap").Result;
+            if (!result.Succeeded)
+            {
+                throw new Exception("plz no :(");
+            }
+            portalContext.SaveChanges();
+            portalContext.Items.AddRange(Picks().Take(50));
             portalContext.SaveChanges();
             InitFurniture();
             InitInstrument();
+            portalContext.SaveChanges();
+            AddBid();
+        }
+
+        private static void AddBid()
+        {
+            Bid bid = new Bid
+            {
+                Amout = 10,
+                User = Users.CheapBuyer,
+                Item = Items.Farewell
+            };
+
+            portalContext.Bids.Add(bid);
+            portalContext.SaveChanges();
         }
 
         private static void InitCategories()
@@ -109,6 +141,22 @@ namespace Portal.Persistence
             );
         }
 
+        private static IEnumerable<Item> Picks()
+        {
+            while (true)
+            {
+                yield return new Item
+                {
+                    Category = Categories.Instrument,
+                    Description = "1.0mm pick",
+                    Expiration = DateTime.Now.AddHours(1),
+                    InitLicit = 200,
+                    Name = "Guitar pick",
+                    Publisher = Publishers.Instrument
+                };
+            }
+        }
+
         private static void InitInstrument()
         {
             Items.LP100 = new Item
@@ -119,7 +167,7 @@ namespace Portal.Persistence
                 Expiration = DateTime.Now.AddDays(3),
                 InitLicit = 40_000,
                 Publisher = Publishers.Instrument,
-                Image = null,
+                Image = File.ReadAllBytes("lp100.jpg"),
             };
             Items.Amp = new Item
             {
