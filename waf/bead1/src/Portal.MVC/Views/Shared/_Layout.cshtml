@@ -39,8 +39,11 @@
                     else
                     {
                         <li><a asp-area="" asp-controller="Home" asp-action="MyItems">My Items</a></li>
-                        <li>Hello, @((ViewData["CurrentUser"] as Portal.Persistence.DbUser).UserName)!
-                            <a asp-controller="Buyer" asp-action="Logout">Sign Out</a>
+                        <li><p class="navbar-text">Hello, @((ViewData["CurrentUser"] as Portal.Persistence.DbUser).UserName)!</p></li>
+                        <li class="navbar-right">
+                            <form class="navbar-form" asp-controller="Buyer" asp-action="Logout">
+                                <input class="btn btn-default" type="submit" value="Sign Out">
+                            </form>
                         </li>
                     }
                 </ul>

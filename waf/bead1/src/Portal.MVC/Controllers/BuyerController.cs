@@ -51,7 +51,7 @@ namespace Portal.MVC.Controllers
                 {
                     if(ModelState.IsValid)
                     {
-                        var result = buyerService.Register(vm);
+                        var result = buyerService.Register(vm).Result;
                         if(result.Succeeded)
                         {
                             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -70,9 +70,9 @@ namespace Portal.MVC.Controllers
                         return View(nameof(Register), vm);
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    return View();
+                    return Content(e.Message);
                 }
             }
             else

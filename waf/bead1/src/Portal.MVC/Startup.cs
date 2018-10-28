@@ -41,6 +41,7 @@ namespace Portal.MVC
                     options.Password.RequireUppercase = false;
                 })
                 .AddEntityFrameworkStores<PortalContext>()
+                //.AddRoles<IdentityRole<string>>()
                 .AddDefaultTokenProviders();
 
             services.AddTransient<PortalService>();
@@ -87,8 +88,9 @@ namespace Portal.MVC
             portalContext.Database.EnsureCreated();
 
             var userManager = app.ApplicationServices.GetRequiredService<UserManager<DbUser>>();
+            //var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole<string>>>();
 
-            DbInitializer.Initialize(portalContext, userManager);
+            DbInitializer.Initialize(portalContext, userManager/*, roleManager*/);
         }
     }
 }

@@ -36,13 +36,18 @@ namespace Portal.Persistence
             public static Item BigBuyer;
         }
         private static PortalContext portalContext;
-        public static void Initialize(PortalContext context, UserManager<DbUser> userManager)
-        {
+        public static void Initialize(
+            PortalContext context,
+            UserManager<DbUser> userManager/*,
+            RoleManager<IdentityRole<string>> roleManager */
+        ) {
             portalContext = context;
 
             portalContext.Database.EnsureCreated();
 
             portalContext.Database.Migrate();
+
+            //InitRoles(roleManager);
 
             if (portalContext.Items.Any())
             {
@@ -54,6 +59,16 @@ namespace Portal.Persistence
                 portalContext.SaveChanges();
             }
         }
+        /*
+        private static void InitRoles(RoleManager<IdentityRole<string>> roleManager)
+        {
+            if (!roleManager.Roles.Any())
+            {
+                var x = roleManager.CreateAsync(new IdentityRole("Buyer")).Result;
+                var y = roleManager.CreateAsync(new IdentityRole("Publisher")).Result;
+            }
+        }*/
+
         private static void Init()
         {
             InitCategories();

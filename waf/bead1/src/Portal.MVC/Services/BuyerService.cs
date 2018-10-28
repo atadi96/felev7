@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Portal.MVC.Models;
@@ -11,14 +12,14 @@ namespace Portal.MVC.Services
     {
         private readonly UserManager<DbUser> userManager;
         private readonly SignInManager<DbUser> signInManager;
-        private readonly RoleManager<DbUser> roleManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly HttpContext httpContext;
 
         public BuyerService(
             IHttpContextAccessor ctxAcc,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager
-            //RoleManager<DbUser> roleManager
+            //RoleManager<IdentityRole> roleManager
         ) {
             this.httpContext = ctxAcc.HttpContext;
             this.userManager = userManager;
@@ -31,7 +32,7 @@ namespace Portal.MVC.Services
             return user;
         }
 
-        public IdentityResult Register(BuyerViewModel vm)
+        public async Task<IdentityResult> Register(BuyerViewModel vm)
         {
             DbUser newUser = new DbUser
             {
@@ -41,18 +42,18 @@ namespace Portal.MVC.Services
                 PhoneNumber = vm.PhoneNumber
             };
 
-            var result = userManager.CreateAsync(newUser, vm.Password).Result;
+            var result = await userManager.CreateAsync(newUser, vm.Password);
             if(result.Succeeded)
             {
-                var roleResult = userManager.AddToRoleAsync(newUser, "buyer").Result;
-                if (roleResult.Succeeded)
-                {
-                    signInManager.SignInAsync(newUser, isPersistent: false);
-                }
-                else
-                {
-                    return roleResult;
-                }
+                //var roleResult = await userManager.AddToRoleAsync(newUser, "buyer");
+                //if (roleResult.Succeeded)
+                //{
+                    await signInManager.SignInAsync(newUser, isPersistent: false);
+                //}
+                //else
+                //{
+                //    return roleResult;
+                //}
             }
             return result;
         }
