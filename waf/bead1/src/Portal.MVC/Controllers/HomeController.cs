@@ -21,36 +21,20 @@ namespace Portal.MVC.Controllers
         {
             vm.UpdatePageContents(portalService.HomeItems(vm.ItemSearch, vm.Category));
             vm.Categories = portalService.CategorySelectList();
+            portalService.SetViewDataUser(ViewData);
             return View("Index", vm);
         }
 
         public IActionResult Item(int id)
         {
+            portalService.SetViewDataUser(ViewData);
             return View("Item", portalService.GetItemForId(id));
-        }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            portalService.SetViewDataUser(ViewData);
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Portal.MVC.Models;
 using Portal.Persistence;
@@ -55,6 +56,11 @@ namespace Portal.MVC.Services
         public async Task<DbUser> CurrentDbUser() {
             DbUser user = await userManager.GetUserAsync(httpContext.User);
             return user;
+        }
+
+        public void SetViewDataUser(ViewDataDictionary viewData)
+        {
+            viewData["CurrentUser"] = CurrentDbUser().Result;
         }
 
         public ItemViewModel GetItemForId(int id) =>
