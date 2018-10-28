@@ -72,7 +72,7 @@ namespace Portal.MVC.Controllers
         // POST: Buyer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("Name", "UserName", "Email", "PhoneNumber", "Password")]BuyerViewModel vm)
+        public ActionResult Create([Bind("Name", "UserName", "Email", "PhoneNumber", "Password", "Password2")]BuyerViewModel vm)
         {
             var esc = EscapeIfLoggedIn();
             if(esc is null)
@@ -81,6 +81,11 @@ namespace Portal.MVC.Controllers
                 {
                     if(ModelState.IsValid)
                     {
+                        if(!vm.Password.Equals(vm.Password2))
+                        {
+                            ModelState.AddModelError(string.Empty, "The two passwords must match");
+                            return View(nameof(Register), vm);
+                        }
                         var result = buyerService.Register(vm).Result;
                         if(result.Succeeded)
                         {
