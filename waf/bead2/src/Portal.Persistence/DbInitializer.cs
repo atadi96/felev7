@@ -33,14 +33,13 @@ namespace Portal.Persistence
         private static class Users
         {
             public static DbUser CheapBuyer;
-            public static DbUser BigBuyer;
         }
         private static UserManager<DbUser> userManager;
         private static PortalContext portalContext;
         public static void Initialize(
             PortalContext context,
-            UserManager<DbUser> userManager/*,
-            RoleManager<IdentityRole<string>> roleManager */
+            UserManager<DbUser> userManager,
+            RoleManager<IdentityRole<int>> roleManager
         ) {
             DbInitializer.userManager = userManager;
             portalContext = context;
@@ -49,7 +48,7 @@ namespace Portal.Persistence
 
             portalContext.Database.Migrate();
 
-            //InitRoles(roleManager);
+            InitRoles(roleManager);
 
             if (portalContext.Items.Any())
             {
@@ -61,15 +60,15 @@ namespace Portal.Persistence
                 portalContext.SaveChanges();
             }
         }
-        /*
-        private static void InitRoles(RoleManager<IdentityRole<string>> roleManager)
+        
+        private static void InitRoles(RoleManager<IdentityRole<int>> roleManager)
         {
             if (!roleManager.Roles.Any())
             {
-                var x = roleManager.CreateAsync(new IdentityRole("Buyer")).Result;
-                var y = roleManager.CreateAsync(new IdentityRole("Publisher")).Result;
+                var x = roleManager.CreateAsync(new IdentityRole<int>("Buyer")).Result;
+                var y = roleManager.CreateAsync(new IdentityRole<int>("Publisher")).Result;
             }
-        }*/
+        }
 
         private static void Init()
         {
@@ -84,9 +83,6 @@ namespace Portal.Persistence
                 Name = "Instrument Publisher",
                 UserName = "inst"
             };
-            portalContext.Users.AddRange(
-                new DbUser[] { Publishers.Furniture, Publishers.Instrument }
-            );
             Users.CheapBuyer = new DbUser
             {
                 UserName = "cheap",
@@ -96,10 +92,12 @@ namespace Portal.Persistence
             };
 
             var result = userManager.CreateAsync(Users.CheapBuyer, "cheap").Result;
-            if (!result.Succeeded)
-            {
-                throw new Exception("plz no :(");
-            }
+            result = userManager.AddToRoleAsync(Users.CheapBuyer, "Buyer").Result;
+            result = userManager.CreateAsync(Publishers.Furniture, "asdf").Result;
+            result = userManager.AddToRoleAsync(Publishers.Furniture, "Publisher").Result;
+            result = userManager.CreateAsync(Publishers.Instrument, "qwer").Result;
+            result = userManager.AddToRoleAsync(Publishers.Instrument, "Publisher").Result;
+
             portalContext.SaveChanges();
             portalContext.Items.AddRange(Picks().Take(50));
             portalContext.SaveChanges();
