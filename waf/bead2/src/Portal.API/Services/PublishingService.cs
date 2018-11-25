@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -8,13 +9,13 @@ using Portal.Persistence.DTO;
 
 namespace Portal.API.Services
 {
-    public class PublishingServices
+    public class PublishingService
     {
         private readonly PortalContext context;
         private readonly HttpContext httpContext;
         private readonly UserManager<DbUser> userManager;
 
-        public PublishingServices(PortalContext context, IHttpContextAccessor contextAccessor, UserManager<DbUser> userManager)
+        public PublishingService(PortalContext context, IHttpContextAccessor contextAccessor, UserManager<DbUser> userManager)
         {
             this.context = context;
             this.httpContext = contextAccessor.HttpContext;
@@ -28,7 +29,7 @@ namespace Portal.API.Services
                     .Include(it => it.Bids)
                     .Where(it => it.Id == itemId && it.Bids.Any())
                     .FirstOrDefault();
-            if(item is null)
+            if (item is null)
             {
                 return false;
             }
@@ -101,6 +102,54 @@ namespace Portal.API.Services
             return item;
         }
 
-        //TODO: post new item
+        private InsertionResultDTO Error(string msg) =>
+            new InsertionResultDTO()
+            {
+                Id = null,
+                Error = msg
+            };
+
+        public async Task<InsertionResultDTO> InsertItem(ItemDataDTO itemData)
+        {
+            if (String.IsNullOrWhiteSpace(itemData.Name))
+            {
+                return Error("Name must not be empty");
+            }
+            if (itemData.Expiration <= DateTime.Now)
+            {
+                return Error("Expiration date must be in the future.");
+            }
+            if (itemData.InitLicit < 0)
+            {
+                return Error("Initial licit must be non-negative.");
+            }
+            var category = await context.Categories
+                .Where(cat => cat.Name == itemData.Category)
+                .FirstOrDefaultAsync();
+            if(category is null)
+            {
+                return Error($"Category '{itemData.Category}' does not exist.");
+            }
+            var publisher =
+                await userManager.GetUserAsync(httpContext.User)
+                ?? throw new Exception("A publisher must be signed in");
+            Item item = new Item()
+            {
+                Category = category,
+                Description = itemData.Description,
+                Expiration = itemData.Expiration,
+                Image = itemData.Image,
+                InitLicit = itemData.InitLicit,
+                Name = itemData.Name,
+                PublishDate = DateTime.Now,
+                Publisher = publisher
+            };
+            await context.Items.AddAsync(item);
+            context.SaveChanges();
+            return new InsertionResultDTO()
+            {
+                Id = item.Id
+            };
+        }
     }
 }
