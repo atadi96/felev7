@@ -45,10 +45,19 @@ namespace Portal.API.Controllers
                 if (result.Succeeded)
                 {
                     var user = await userManager.FindByNameAsync(username);
-                    return new PublisherDTO()
+                    var isPublisher = await userManager.IsInRoleAsync(user, "Publisher");
+                    if(isPublisher)
                     {
-                        Name = user.Name
-                    };
+                        return new PublisherDTO()
+                        {
+                            Name = user.Name
+                        };
+                    }
+                    else
+                    {
+                        await signInManager.SignOutAsync();
+                        return null;
+                    }
                 }
                 else
                 {

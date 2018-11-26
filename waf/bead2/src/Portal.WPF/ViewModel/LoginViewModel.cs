@@ -40,8 +40,6 @@ namespace Portal.WPF.ViewModel
             {
                 var result = await _model.LoginAsync(UserName, passwordBox.Password);
 
-                //_model.LoginAsync(UserName, passwordBox.Password)
-
                 if (result != null)
                     OnLoginSuccess(result);
                 else

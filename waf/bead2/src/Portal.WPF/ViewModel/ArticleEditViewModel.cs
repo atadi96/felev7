@@ -79,7 +79,7 @@ namespace Portal.WPF.ViewModel
 
         public bool Closeable =>
             !NewItem &&
-            Expiration > DateTime.Now &&
+            itemData.Expiration > DateTime.Now &&
             (itemData?.Bids?.Any() ?? false);
 
         public string Name
@@ -125,23 +125,6 @@ namespace Portal.WPF.ViewModel
                     bids = value;
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        public DateTime PublishDate
-        {
-            get => itemData.PublishDate;
-            set { itemData.PublishDate = value; OnPropertyChanged(); }
-        }
-
-        public DateTime Expiration
-        {
-            get => itemData.Expiration;
-            set
-            {
-                if (itemData.Expiration == value) return;
-                itemData.Expiration = value;
-                OnPropertyChanged();
             }
         }
 
@@ -260,7 +243,9 @@ namespace Portal.WPF.ViewModel
             if (itemId is null)
             {
                 Title = "Publish new item";
-                Expiration = DateTime.Now;
+                itemData.Expiration = DateTime.Now;
+                OnPropertyChanged(nameof(ExpirationText));
+                OnPropertyChanged(nameof(Closeable));
                 NewItem = true;
                 IsReady = true;
             }
@@ -277,9 +262,7 @@ namespace Portal.WPF.ViewModel
                     OnPropertyChanged(nameof(Description));
                     OnPropertyChanged(nameof(InitLicit));
                     OnPropertyChanged(nameof(Image));
-                    //OnPropertyChanged(nameof(Expiration));
                     OnPropertyChanged(nameof(ExpirationText));
-                    OnPropertyChanged(nameof(PublishDate));
                     OnPropertyChanged(nameof(Closeable));
                     IsReady = true;
                 }

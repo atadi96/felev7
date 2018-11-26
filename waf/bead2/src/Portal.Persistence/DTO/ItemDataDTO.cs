@@ -4,8 +4,6 @@ namespace Portal.Persistence.DTO
 {
     public class ItemDataDTO
     {
-        public string[] Categories { get; set; }
-
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -19,8 +17,6 @@ namespace Portal.Persistence.DTO
         public byte[] Image { get; set; }
 
         public BidDTO[] Bids { get; set; }
-
-        public DateTime PublishDate { get; set; }
 
         public DateTime Expiration { get; set; }
     }

@@ -66,9 +66,6 @@ namespace Portal.API.Services
         public async Task<ItemDataDTO> GetItem(int itemId)
         {
             var user = await userManager.GetUserAsync(httpContext.User);
-            var categories = await context.Categories
-                .Select(cat => cat.Name)
-                .ToArrayAsync();
             var item = await context.Items
                 .Include(it => it.Bids)
                 .ThenInclude(bid => bid.User)
@@ -77,7 +74,6 @@ namespace Portal.API.Services
                 .Select(it =>
                     new ItemDataDTO()
                     {
-                        Categories = categories,
                         Id = it.Id,
                         Name = it.Name,
                         Category = it.Category.Name,
@@ -96,8 +92,7 @@ namespace Portal.API.Services
                                     }
                                 )
                                 .ToArray(),
-                        Expiration = it.Expiration,
-                        PublishDate = it.PublishDate
+                        Expiration = it.Expiration
                     }
                 )
                 .FirstOrDefaultAsync();
