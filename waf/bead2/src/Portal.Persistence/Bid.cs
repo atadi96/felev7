@@ -17,7 +17,7 @@ namespace Portal.Persistence
         public DbUser User { get; set; }
 
         [Required]
-        public int Amout { get; set; }
+        public int Amount { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime PutDate { get; set; }

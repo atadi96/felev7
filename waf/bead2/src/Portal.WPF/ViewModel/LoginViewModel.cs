@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Controls;
-using Hirportal.WPF.Persistence;
-using Hirportal.Persistence.DTO;
+using Portal.WPF.Persistence;
+using Portal.Persistence.DTO;
 
-namespace Hirportal.WPF.ViewModel
+namespace Portal.WPF.ViewModel
 {
 
     public class LoginViewModel : ViewModelBase
@@ -18,7 +18,7 @@ namespace Hirportal.WPF.ViewModel
 
         public event EventHandler ExitApplication;
 
-        public event EventHandler<AuthorDTO> LoginSuccess;
+        public event EventHandler<PublisherDTO> LoginSuccess;
 
         public event EventHandler LoginFailed;
 
@@ -38,7 +38,7 @@ namespace Hirportal.WPF.ViewModel
 
             try
             {
-                AuthorDTO result = await _model.LoginAsync(UserName, passwordBox.Password);
+                var result = await _model.LoginAsync(UserName, passwordBox.Password);
 
                 //_model.LoginAsync(UserName, passwordBox.Password)
 
@@ -47,13 +47,13 @@ namespace Hirportal.WPF.ViewModel
                 else
                     OnLoginFailed();
             }
-            catch (PersistenceUnavailableException)
+            catch (PersistenceUnavailableException ex)
             {
-                OnMessageApplication("No connection to the service.");
+                OnMessageApplication($"No connection to the service. Reason: {ex.Message}");
             }
         }
 
-        private void OnLoginSuccess(AuthorDTO author)
+        private void OnLoginSuccess(PublisherDTO author)
         {
             LoginSuccess?.Invoke(this, author);
         }

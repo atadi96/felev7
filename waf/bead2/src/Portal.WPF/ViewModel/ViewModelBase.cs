@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Hirportal.WPF.ViewModel
+namespace Portal.WPF.ViewModel
 {
     /// <summary>
     /// Nézetmodell ősosztály típusa.

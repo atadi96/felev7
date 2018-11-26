@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hirportal.WPF.Persistence
+namespace Portal.WPF.Persistence
 {
     /// <summary>
     /// Perzisztencia elérhetetlenség kivétel típusa.

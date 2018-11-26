@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using Hirportal.Persistence.DTO;
+using Portal.Persistence.DTO;
 
-namespace Hirportal.WPF.Persistence
+namespace Portal.WPF.Persistence
 {
     public class NewsServicePersistence : INewsPersistence
     {
-        private const string API_ARTICLES = "api/articles/";
+        private const string API_ITEMS = "api/items/";
 
         private const string API_ACCOUNT = "api/account/";
 
@@ -18,21 +18,21 @@ namespace Hirportal.WPF.Persistence
 
         public bool IsLoggedOn { get; private set; }
 
-        public NewsServicePersistence(String baseAddress)
+        public NewsServicePersistence(string baseAddress)
         {
             _client = new HttpClient(); // a szolgáltatás kliense
             _client.BaseAddress = new Uri(baseAddress); // megadjuk neki a címet
             IsLoggedOn = false;
         }
 
-        public async Task<IEnumerable<ArticlePreviewDTO>> GetUserArticlesAsync()
+        public async Task<IEnumerable<ItemPreviewDTO>> GetUserItemsAsync()
         {
             try
             {
-                HttpResponseMessage response = await _client.GetAsync(API_ARTICLES);
+                HttpResponseMessage response = await _client.GetAsync(API_ITEMS);
                 if (response.IsSuccessStatusCode)
                 {
-                    IEnumerable<ArticlePreviewDTO> previews = await response.Content.ReadAsAsync<IEnumerable<ArticlePreviewDTO>>();
+                    IEnumerable<ItemPreviewDTO> previews = await response.Content.ReadAsAsync<IEnumerable<ItemPreviewDTO>>();
                     return previews;
                 }
                 else
@@ -47,18 +47,18 @@ namespace Hirportal.WPF.Persistence
 
         }
 
-        public async Task<ArticleDTO> GetArticleAsync(int articleID)
+        public async Task<ItemDataDTO> GetItemAsync(int itemId)
         {
             try
             {
-                HttpResponseMessage response = await _client.GetAsync(API_ARTICLES + articleID);
+                HttpResponseMessage response = await _client.GetAsync(API_ITEMS + itemId);
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     return null;
                 }
                 else if (response.IsSuccessStatusCode)
                 {
-                    return (await response.Content.ReadAsAsync<ArticleDTO>());
+                    return (await response.Content.ReadAsAsync<ItemDataDTO>());
                 }
                 else
                 {
@@ -75,14 +75,14 @@ namespace Hirportal.WPF.Persistence
             }
         }
 
-        public async Task<Boolean> CreateArticleAsync(ArticleUploadDTO articleDTO)
+        public async Task<InsertionResultDTO> InsertItemAsync(ItemDataDTO itemDTO)
         {
             try
             {
-                using (HttpResponseMessage response = await _client.PostAsJsonAsync(API_ARTICLES, articleDTO))
+                using (HttpResponseMessage response = await _client.PostAsJsonAsync(API_ITEMS, itemDTO))
                 { // az értékeket azonnal JSON formátumra alakítjuk
-                    articleDTO.Id = (await response.Content.ReadAsAsync<ArticleDTO>()).Id; // a válaszüzenetben megkapjuk a végleges azonosítót
-                    return response.IsSuccessStatusCode;
+                    var result = await response.Content.ReadAsAsync<InsertionResultDTO>();
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -91,11 +91,11 @@ namespace Hirportal.WPF.Persistence
             }
         }
 
-        public async Task<Boolean> UpdateArticleAsync(ArticleUploadDTO articleDTO)
+        public async Task<bool> CloseItemAsync(int articleID)
         {
             try
             {
-                HttpResponseMessage response = await _client.PutAsJsonAsync(API_ARTICLES, articleDTO);
+                HttpResponseMessage response = await _client.PutAsync(API_ITEMS + articleID, null);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -104,27 +104,14 @@ namespace Hirportal.WPF.Persistence
             }
         }
 
-        public async Task<Boolean> DeleteArticleAsync(int articleID)
-        {
-            try
-            {
-                HttpResponseMessage response = await _client.DeleteAsync(API_ARTICLES + articleID);
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                throw new PersistenceUnavailableException(ex);
-            }
-        }
-
-        public async Task<AuthorDTO> LoginAsync(string userName, string userPassword)
+        public async Task<PublisherDTO> LoginAsync(string userName, string userPassword)
         {
             try
             {
                 HttpResponseMessage response = await _client.GetAsync(API_ACCOUNT + "login/" + userName + "/" + userPassword);
                 if (response.IsSuccessStatusCode)
                 {
-                    AuthorDTO result = await response.Content.ReadAsAsync<AuthorDTO>();
+                    var result = await response.Content.ReadAsAsync<PublisherDTO>();
                     IsLoggedOn = true;
                     return result;
                 }
@@ -135,7 +122,7 @@ namespace Hirportal.WPF.Persistence
             }
             catch (Exception ex)
             {
-                throw new PersistenceUnavailableException(ex);
+                throw new PersistenceUnavailableException(ex.Message);
             }
         }
 
@@ -151,6 +138,11 @@ namespace Hirportal.WPF.Persistence
             {
                 throw new PersistenceUnavailableException(ex);
             }
+        }
+
+        public async Task<IEnumerable<string>> GetCategories()
+        {
+            return new[] { "Furniture", "Instrument", "Other" };
         }
     }
 }

@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hirportal.Persistence.DTO;
+using Portal.Persistence.DTO;
 
-namespace Hirportal.WPF.Persistence
+namespace Portal.WPF.Persistence
 {
     public interface INewsPersistence
     {
         bool IsLoggedOn { get; }
 
-        Task<IEnumerable<ArticlePreviewDTO>> GetUserArticlesAsync();
+        Task<IEnumerable<string>> GetCategories();
 
-        Task<ArticleDTO> GetArticleAsync(int articleID);
+        Task<IEnumerable<ItemPreviewDTO>> GetUserItemsAsync();
 
-        Task<Boolean> CreateArticleAsync(ArticleUploadDTO article);
+        Task<ItemDataDTO> GetItemAsync(int itemId);
 
-        Task<Boolean> UpdateArticleAsync(ArticleUploadDTO article);
+        Task<InsertionResultDTO> InsertItemAsync(ItemDataDTO article);
 
-        Task<Boolean> DeleteArticleAsync(int articleID);
+        Task<bool> CloseItemAsync(int articleID);
 
-        Task<AuthorDTO> LoginAsync(string userName, string userPassword);
+        Task<PublisherDTO> LoginAsync(string userName, string userPassword);
 
-        Task<Boolean> LogoutAsync();
+        Task<bool> LogoutAsync();
     }
 }

@@ -1,6 +1,6 @@
-﻿using Hirportal.WPF.Model;
-using Hirportal.WPF.Persistence;
-using Hirportal.Persistence.DTO;
+﻿using Portal.WPF.Model;
+using Portal.WPF.Persistence;
+using Portal.Persistence.DTO;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
-namespace Hirportal.WPF.ViewModel
+namespace Portal.WPF.ViewModel
 {
     /// <summary>
     /// A nézetmodell típusa.
@@ -16,18 +16,18 @@ namespace Hirportal.WPF.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private INewsPersistence _model;
-        private ObservableCollection<ArticlePreviewDTO> _articlePreviews;
+        private ObservableCollection<ItemPreviewDTO> _itemPreviews;
         private bool _isLoaded;
-        private AuthorDTO _author;
+        private PublisherDTO _publisher;
 
-        public ObservableCollection<ArticlePreviewDTO> ArticlePreviews
+        public ObservableCollection<ItemPreviewDTO> ItemPreviews
         {
-            get { return _articlePreviews; }
+            get { return _itemPreviews; }
             private set
             {
-                if (_articlePreviews != value)
+                if (_itemPreviews != value)
                 {
-                    _articlePreviews = value;
+                    _itemPreviews = value;
                     OnPropertyChanged();
                 }
             }
@@ -46,12 +46,12 @@ namespace Hirportal.WPF.ViewModel
             }
         }
 
-        public AuthorDTO Author
+        public PublisherDTO Publisher
         {
-            get { return _author; }
+            get { return _publisher; }
             private set
             {
-                _author = value;
+                _publisher = value;
                 OnPropertyChanged();
             }
         }
@@ -70,11 +70,11 @@ namespace Hirportal.WPF.ViewModel
 
         public event EventHandler<int> EditArticle;
 
-        public MainViewModel(INewsPersistence model, AuthorDTO author)
+        public MainViewModel(INewsPersistence model, PublisherDTO author)
         {
             _model = model ?? throw new ArgumentNullException("model");
             _isLoaded = false;
-            _author = author;
+            _publisher = author;
 
             DeleteArticleCommand = new DelegateCommand(param => DeleteArticle((int)param));
 
@@ -95,7 +95,7 @@ namespace Hirportal.WPF.ViewModel
             {
                 try
                 {
-                    bool result = await _model.DeleteArticleAsync(articleID);
+                    bool result = await _model.CloseItemAsync(articleID);
                     MessageBox.Show(result ? "Article deleted successfully." : "Article delete failed!");
                 }
                 catch (PersistenceUnavailableException ex)
@@ -123,7 +123,7 @@ namespace Hirportal.WPF.ViewModel
         private async void Refresh()
         {
             IsLoaded = false;
-            ArticlePreviews = new ObservableCollection<ArticlePreviewDTO>(await _model.GetUserArticlesAsync());
+            ItemPreviews = new ObservableCollection<ItemPreviewDTO>(await _model.GetUserItemsAsync());
             IsLoaded = true;
         }
 

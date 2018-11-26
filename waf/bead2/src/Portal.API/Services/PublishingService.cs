@@ -43,8 +43,9 @@ namespace Portal.API.Services
         public async Task<ItemPreviewDTO[]> GetPreviews()
         {
             var user = await userManager.GetUserAsync(httpContext.User);
-            return await context.Items
+            return context.Items
                 .Include(item => item.Bids)
+                .Include(item => item.Publisher)
                 .Where(item => item.Publisher == user)
                 .OrderByDescending(item => item.Expiration)
                 .Select(item =>
@@ -55,11 +56,11 @@ namespace Portal.API.Services
                         Name = item.Name,
                         CurrentBid =
                             item.Bids.Any()
-                                ? (int?)item.Bids.Select(bid => bid.Amout).Max()
+                                ? (int?)item.Bids.Select(bid => bid.Amount).Max()
                                 : null
                     }
                 )
-                .ToArrayAsync();
+                .ToArray();
         }
 
         public async Task<ItemDataDTO> GetItem(int itemId)
@@ -89,7 +90,7 @@ namespace Portal.API.Services
                                 .Select(bid =>
                                     new BidDTO()
                                     {
-                                        Amount = bid.Amout,
+                                        Amount = bid.Amount,
                                         BuyerName = bid.User.Name,
                                     }
                                 )
@@ -115,13 +116,17 @@ namespace Portal.API.Services
             {
                 return Error("Name must not be empty");
             }
+            if (String.IsNullOrWhiteSpace(itemData.Description))
+            {
+                return Error("Description must not be empty");
+            }
             if (itemData.Expiration <= DateTime.Now)
             {
                 return Error("Expiration date must be in the future.");
             }
-            if (itemData.InitLicit < 0)
+            if (itemData.InitLicit <= 0)
             {
-                return Error("Initial licit must be non-negative.");
+                return Error("Initial licit must be greater than zero.");
             }
             var category = await context.Categories
                 .Where(cat => cat.Name == itemData.Category)

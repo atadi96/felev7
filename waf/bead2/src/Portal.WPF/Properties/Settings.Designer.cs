@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Hirportal.WPF.Properties
+namespace Portal.WPF.Properties
 {
 
 

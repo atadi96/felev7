@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Hirportal.WPF.View
+namespace Portal.WPF.View
 {
     public partial class MainWindow : Window
     {

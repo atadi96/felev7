@@ -3,86 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Hirportal.Persistence.DTO;
+using Portal.Persistence.DTO;
 
-namespace Hirportal.WPF.Persistence
+namespace Portal.WPF.Persistence
 {
     class MockupPersistence : INewsPersistence
     {
-        public bool IsLoggedOn { get; private set; }
+        public bool IsLoggedOn => throw new NotImplementedException();
 
-        public MockupPersistence()
+        public Task<bool> CloseItemAsync(int articleID)
         {
-            IsLoggedOn = false;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> CreateArticleAsync(ArticleUploadDTO article)
+        public Task<IEnumerable<string>> GetCategories()
         {
-            article.Id = 10;
-            return true;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> DeleteArticleAsync(int articleID)
+        public Task<ItemDataDTO> GetItemAsync(int itemId)
         {
-            return true;
+            throw new NotImplementedException();
         }
 
-        public async Task<ArticleDTO> GetArticleAsync(int articleID)
+        public Task<IEnumerable<ItemPreviewDTO>> GetUserItemsAsync()
         {
-            return new ArticleDTO()
-            {
-                Content = "This is a sample content",
-                Title = "Sample Title",
-                Description = "Sample text",
-                Id = 5,
-                Images = new ImageDTO[0]
-            };
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ArticlePreviewDTO>> GetUserArticlesAsync()
+        public Task<InsertionResultDTO> InsertItemAsync(ItemDataDTO article)
         {
-            return new ArticlePreviewDTO[]
-            {
-                new ArticlePreviewDTO()
-                {
-                    Id = 0,
-                    Author = "Gloria Borger",
-                    PublishedTime = DateTime.Now,
-                    Title = "Am I PewDiePie?"
-                },
-                new ArticlePreviewDTO()
-                {
-                    Id = 1,
-                    Author = "Gloria Borger",
-                    PublishedTime = DateTime.Now,
-                    Title = "Weekly highlights"
-                }
-            };
+            throw new NotImplementedException();
         }
 
-        public async Task<AuthorDTO> LoginAsync(string userName, string userPassword)
+        public Task<PublisherDTO> LoginAsync(string userName, string userPassword)
         {
-            if (userName == "admin" && userPassword == "admin")
-            {
-                IsLoggedOn = true;
-                return new AuthorDTO() { Name = "Gloria Borger", Username = "pdp" };
-            }
-            else
-            {
-                IsLoggedOn = false;
-                return null;
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> LogoutAsync()
+        public Task<bool> LogoutAsync()
         {
-            IsLoggedOn = false;
-            return true;
-        }
-
-        public async Task<bool> UpdateArticleAsync(ArticleUploadDTO article)
-        {
-            return true;
+            throw new NotImplementedException();
         }
     }
 }

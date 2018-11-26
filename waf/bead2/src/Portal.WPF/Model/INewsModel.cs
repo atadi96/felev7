@@ -1,64 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.ComponentModel;
 
-using Hirportal.Persistence.DTO;
+using Portal.Persistence.DTO;
 
-namespace Hirportal.WPF.Model
+namespace Portal.WPF.Model
 {
-    public class ModelAsyncCompletedEventArgs<T> : AsyncCompletedEventArgs
-    {
-        ModelAsyncCompletedEventArgs(Exception ex, bool cancelled) : base(ex, cancelled, null)
-        {
-
-        }
-
-        ModelAsyncCompletedEventArgs(T result) : base(null, false, null)
-        {
-            _data = result;
-        }
-
-        private T _data;
-
-        public T Data
-        {
-            get
-            {
-                RaiseExceptionIfNecessary();
-                return _data;
-            }
-        }
-    }
-
     public interface INewsModel
     {
 
-        IReadOnlyList<ArticlePreviewDTO> ArticlePreviews { get; }
+        IReadOnlyList<ItemPreviewDTO> ItemPreviews { get; }
 
-        AuthorDTO LoggedInUser { get; }
+        PublisherDTO LoggedInUser { get; }
 
         bool IsBusy { get; }
 
         void LoadPreviewsAsync();
 
-        EventHandler<ModelAsyncCompletedEventArgs<IReadOnlyList<ArticlePreviewDTO>>> LoadPreviewsAsyncFinished { get; set; }
+        EventHandler<ModelAsyncCompletedEventArgs<IReadOnlyList<ItemPreviewDTO>>> LoadPreviewsAsyncFinished { get; set; }
 
-        void GetArticleAsync(int id);
+        void GetItemAsync(int id);
 
-        void CreateArticleAsync(ArticleDTO article);
+        void CreateItemAsync(ItemPreviewDTO article);
 
-        void UpdateArticleAsync(ArticleDTO article);
+        void CloseItemAsync(int id);
 
-        EventHandler<ModelAsyncCompletedEventArgs<ArticleDTO>> ArticleLoadFinished { get; set; }
+        EventHandler<ModelAsyncCompletedEventArgs<ItemPreviewDTO>> ItemLoadFinished { get; set; }
 
-        void DeleteArticleAsync(ArticleDTO building);
+        void LoginAsync(string userName, string userPassword);
 
-        EventHandler<ModelAsyncCompletedEventArgs<bool>> ArticleDeleteFinished { get; set; }
-
-        void LoginAsync(String userName, String userPassword);
-
-        EventHandler<ModelAsyncCompletedEventArgs<AuthorDTO>> LoginAsyncFinished { get; set; }
+        EventHandler<ModelAsyncCompletedEventArgs<PublisherDTO>> LoginAsyncFinished { get; set; }
 
         void LogoutAsync();
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hirportal.WPF.Model
+namespace Portal.WPF.Model
 {
     public class ArticleEventArgs : EventArgs
     {

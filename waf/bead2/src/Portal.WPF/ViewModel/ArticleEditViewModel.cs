@@ -6,14 +6,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Hirportal.Persistence.DTO;
-using Hirportal.WPF.Persistence;
+using Portal.Persistence.DTO;
+using Portal.WPF.Persistence;
 using Microsoft.Win32;
+using System.Windows.Data;
 
-namespace Hirportal.WPF.ViewModel
+namespace Portal.WPF.ViewModel
 {
     class ArticleEditViewModel : ViewModelBase
     {
+        public class CategoryItem
+        {
+            public string Name { get; set; }
+            public override string ToString()
+            {
+                return Name;
+            }
+            public override bool Equals(object obj)
+            {
+                return string.Equals(Name, ((CategoryItem)obj).Name);
+            }
+            public override int GetHashCode()
+            {
+                return Name.GetHashCode();
+            }
+        }
+
         private INewsPersistence model;
         private bool newPost;
 
@@ -22,63 +40,95 @@ namespace Hirportal.WPF.ViewModel
         public bool IsReady
         {
             get => isReady;
-            private set
-            {
-                isReady = value;
-                OnPropertyChanged();
-            }
+            private set { isReady = value; OnPropertyChanged(); }
         }
 
-        private ArticleUploadDTO article;
+        private ItemDataDTO itemData;
 
+        private string title = "Loading...";
         public string Title
         {
-            get => article.Title;
-            set { article.Title = value; OnPropertyChanged(); }
+            get => title;
+            private set { title = value; OnPropertyChanged(); }
+        }
+
+        private bool newItem = false;
+        public bool NewItem
+        {
+            get => newItem;
+            private set { newItem = value; OnPropertyChanged(); }
+        }
+
+        public bool Closeable =>
+            !NewItem &&
+            Expiration > DateTime.Now &&
+            (itemData?.Bids?.Any() ?? false);
+
+        public string Name
+        {
+            get => itemData.Name;
+            set { itemData.Name = value; OnPropertyChanged(); }
         }
 
         public string Description
         {
-            get => article.Description;
-            set { article.Description = value; OnPropertyChanged(); }
+            get => itemData.Description;
+            set { itemData.Description = value; OnPropertyChanged(); }
         }
 
-        public string Content
+        public byte[] Image
         {
-            get => article.Content;
-            set { article.Content = value; OnPropertyChanged(); }
+            get => itemData.Image;
+            set { itemData.Image = value; OnPropertyChanged(); }
         }
 
-        public bool DeleteImages
+        public ReadOnlyObservableCollection<CategoryItem> Categories { get; private set; }
+
+        public string Category
         {
-            get => article.DeleteImages;
-            set { article.DeleteImages = value; OnPropertyChanged(); }
+            get => itemData.Category;
+            set { itemData.Category = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<byte[]> images;
-
-        public ObservableCollection<byte[]> Images
+        public int InitLicit
         {
-            get => images;
-            private set { images = value; OnPropertyChanged(); }
+            get => itemData.InitLicit;
+            set { itemData.InitLicit = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<byte[]> newImages;
+        public ObservableCollection<BidDTO> Bids { get; private set; }
 
-        public ObservableCollection<byte[]> NewImages
+        public DateTime PublishDate
         {
-            get => newImages;
-            private set
+            get => itemData.PublishDate;
+            set { itemData.PublishDate = value; OnPropertyChanged(); }
+        }
+
+        public DateTime Expiration
+        {
+            get => itemData.Expiration;
+            set
             {
-                newImages = value;
+                if (itemData.Expiration == value) return;
+                itemData.Expiration = value;
                 OnPropertyChanged();
             }
         }
 
-        public bool Leading
+        public string ExpirationText
         {
-            get => article.Leading;
-            set { article.Leading = value; OnPropertyChanged(); }
+            get
+            {
+                var text = itemData.Expiration.ToLongDateString() + " " + itemData.Expiration.ToLongTimeString();
+                return text;
+            }
+            set
+            {
+                if(DateTime.TryParse(value, out DateTime result))
+                {
+                    itemData.Expiration = result;
+                }
+            }
         }
 
         public DelegateCommand BackCommand { get; private set; }
@@ -89,16 +139,16 @@ namespace Hirportal.WPF.ViewModel
 
         public DelegateCommand AddImageCommand { get; private set; }
 
-        public ArticleEditViewModel(INewsPersistence model, int? articleID = null)
+        public ArticleEditViewModel(INewsPersistence model, int? itemId = null)
         {
             this.model = model;
-            newPost = articleID == null;
-            article = new ArticleUploadDTO();
+            newPost = itemId == null;
+            itemData = new ItemDataDTO();
             BackCommand = new DelegateCommand(_ => BackEvent?.Invoke(this, EventArgs.Empty));
             SaveCommand = new DelegateCommand(_ => Save());
             AddImageCommand = new DelegateCommand(_ => UploadImage());
             IsReady = false;
-            FetchArticle(articleID);
+            FetchArticle(itemId);
         }
 
         private void UploadImage()
@@ -107,12 +157,12 @@ namespace Hirportal.WPF.ViewModel
             dialog.CheckFileExists = true;
             dialog.Filter = "Image files (*.jpg, *.png, *.jpeg, *.bmp)|*.jpg;*.png;*.jpeg;*.bmp|Any files (*.*)|*.*";
             dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            dialog.Multiselect = true;
+            dialog.Multiselect = false;
             if (dialog.ShowDialog() == true)
             {
                 foreach (string filename in dialog.FileNames)
                 {
-                    NewImages.Add(File.ReadAllBytes(filename));
+                    Image = File.ReadAllBytes(filename);
                 }
             }
         }
@@ -120,38 +170,18 @@ namespace Hirportal.WPF.ViewModel
         private async void Save()
         {
             IsReady = false;
-            article.NewImages = NewImages.ToArray();
-            bool result = false;
+            InsertionResultDTO result;
             try
             {
-                if (newPost)
+                result = await model.InsertItemAsync(itemData);
+                if (!(result.Id is null))
                 {
-                    result = await model.CreateArticleAsync(article);
-                }
-                else
-                {
-                    result = await model.UpdateArticleAsync(article);
-                }
-
-                if (result)
-                {
-                    newPost = false;
-                    if (article.DeleteImages)
-                    {
-                        Images.Clear();
-                    }
-                    foreach (byte[] imageData in NewImages)
-                    {
-                        Images.Add(imageData);
-                    }
-                    article.NewImages = new byte[0][];
-                    NewImages.Clear();
-                    DeleteImages = false;
                     OnMessageApplication("Save successful!");
+                    BackEvent?.Invoke(this, null);
                 }
                 else
                 {
-                    OnMessageApplication("Save refused by the server!");
+                    OnMessageApplication($"Save refused by the server! Error: {result.Error}");
                 }
             }
             catch (PersistenceUnavailableException ex)
@@ -161,33 +191,38 @@ namespace Hirportal.WPF.ViewModel
             IsReady = true;
         }
 
-        private async void FetchArticle(int? articleID = null)
+        private async void FetchArticle(int? itemId = null)
         {
-            if (articleID == null)
+            var categories = await model.GetCategories();
+            Categories =
+                    new ReadOnlyObservableCollection<CategoryItem>(
+                        new ObservableCollection<CategoryItem>(
+                            categories.Select(catName => new CategoryItem() { Name = catName })
+                        )
+                    );
+            if (itemId is null)
             {
-                article.Id = 0;
-                Title = "";
-                Description = "";
-                Content = "";
-                Leading = false;
-                DeleteImages = false;
-                NewImages = new ObservableCollection<byte[]>();
-                Images = new ObservableCollection<byte[]>();
+                Title = "Publish new item";
+                Expiration = DateTime.Now;
+                NewItem = true;
                 IsReady = true;
             }
             else
             {
                 try
                 {
-                    var articleDTO = await model.GetArticleAsync(articleID.Value);
-                    article.Id = articleDTO.Id;
-                    Title = articleDTO.Title;
-                    Description = articleDTO.Description;
-                    Content = articleDTO.Content;
-                    Leading = articleDTO.Leading;
-                    DeleteImages = false;
-                    NewImages = new ObservableCollection<byte[]>();
-                    Images = new ObservableCollection<byte[]>(articleDTO.Images.Select(img => img.Data));
+                    itemData = await model.GetItemAsync(itemId.Value);
+                    Bids = new ObservableCollection<BidDTO>(itemData.Bids);
+                    NewItem = false;
+                    Title = "Details - " + itemData.Name;
+                    OnPropertyChanged(nameof(Name));
+                    OnPropertyChanged(nameof(Category));
+                    OnPropertyChanged(nameof(Description));
+                    OnPropertyChanged(nameof(InitLicit));
+                    OnPropertyChanged(nameof(Image));
+                    //OnPropertyChanged(nameof(Expiration));
+                    OnPropertyChanged(nameof(ExpirationText));
+                    OnPropertyChanged(nameof(PublishDate));
                     IsReady = true;
                 }
                 catch (PersistenceUnavailableException ex)
@@ -201,7 +236,7 @@ namespace Hirportal.WPF.ViewModel
 
         private void PersistenceError(PersistenceUnavailableException ex)
         {
-            OnMessageApplication($"Persistence unavailable: {ex.Message}");
+            OnMessageApplication($"Persistence error: {ex.Message}");
         }
     }
 }

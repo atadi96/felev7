@@ -5,12 +5,12 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Hirportal.WPF.Persistence;
-using Hirportal.WPF.ViewModel;
-using Hirportal.WPF.View;
-using Hirportal.Persistence.DTO;
+using Portal.WPF.Persistence;
+using Portal.WPF.ViewModel;
+using Portal.WPF.View;
+using Portal.Persistence.DTO;
 
-namespace Hirportal.WPF
+namespace Portal.WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -39,7 +39,7 @@ namespace Hirportal.WPF
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
-            persistence = new NewsServicePersistence("http://localhost:51749/");
+            persistence = new NewsServicePersistence("http://localhost:5000/");
             //persistence = new MockupPersistence();
             loginViewModel = new LoginViewModel(persistence);
             loginViewModel.ExitApplication += ExitApplication;
@@ -57,7 +57,7 @@ namespace Hirportal.WPF
             MessageBox.Show("Login failed!", "News author login");
         }
 
-        private void LoginSuccess(object sender, AuthorDTO author)
+        private void LoginSuccess(object sender, PublisherDTO author)
         {
             mainViewModel = new MainViewModel(persistence, author);
             mainViewModel.CreateArticle += MainViewModel_CreateArticle;

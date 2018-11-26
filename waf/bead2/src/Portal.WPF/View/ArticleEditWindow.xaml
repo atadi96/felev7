@@ -1,9 +1,11 @@
-﻿<Window x:Class="Hirportal.WPF.View.ArticleEditWindow"
+﻿<Window x:Class="Portal.WPF.View.ArticleEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Hirportal.WPF.View"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:Portal.WPF.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="{Binding Title}"
         Width="800"
@@ -17,99 +19,92 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="100"/>
-            <RowDefinition Height="120" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="120" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <Label>Title:</Label>
+        <Label>Name:</Label>
         <TextBox Grid.Column="1"
+                 IsEnabled="{Binding NewItem}"
                  Margin="0,0,0,10"
-                 Text="{Binding Title}"
+                 Text="{Binding Name}"
                  Grid.ColumnSpan="2"/>
         
-        <Label Grid.Row="1">Description (&lt;1000):</Label>
+        <Label Grid.Row="1">Description:</Label>
         <TextBox Grid.Row="1"
                  Grid.Column="1"
                  Margin="0,0,0,10"
+                 IsEnabled="{Binding NewItem}"
                  Text="{Binding Description}"
                  Grid.ColumnSpan="2" />
         
-        <Label Grid.Row="2">Content:</Label>
-        <TextBox Grid.Row="2"
+        <Label Grid.Row="2">Category:</Label>
+        <ComboBox Grid.Row="2"
                  Grid.Column="1"
-                 AcceptsReturn="True"
                  Margin="0,0,0,10"
                  Grid.ColumnSpan="2"
-                 Text="{Binding Content}"/>
+                 IsEnabled="{Binding NewItem}"
+                 ItemsSource="{Binding Categories}"
+                 DisplayMemberPath="Name"
+                 SelectedValuePath="Name"
+                 SelectedValue="{Binding Category}"/>
 
-        <Label Grid.Row="3">Images</Label>
-        <ItemsControl Grid.Row="3"
-                      Grid.Column="1"
-                      Grid.ColumnSpan="2"
-                      ItemsSource="{Binding Images}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,10" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding}"
-                           MaxWidth="100"
-                           MaxHeight="100"
-                           Margin="0,10,0,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Label Grid.Row="5">Image</Label>
+        <Image Source="{Binding Image}"
+               MaxWidth="100"
+               MaxHeight="100"
+               Margin="0,10,0,0"
+               Grid.Row="5"
+               Grid.Column="1"/>
 
-        <Label Grid.Row="4">
-            <Button Command="{Binding AddImageCommand}">
+        <Label Grid.Row="6">
+            <Button Command="{Binding AddImageCommand}"
+                    IsEnabled="{Binding NewItem}">
                 Add new image
             </Button>
         </Label>
-        <ItemsControl Grid.Row="4"
-                      Grid.Column="1"
-                      Grid.ColumnSpan="2"
-                      ItemsSource="{Binding NewImages}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,10"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding}"
-                           MaxWidth="100"
-                           MaxHeight="100"
-                           Margin="0,10,0,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
 
-        <CheckBox Grid.Row="5"
-                  Grid.Column="1"
-                  IsChecked="{Binding Leading}"
-                  Margin="0,10,0,10">
-            Leading article
-        </CheckBox>
+        <Label Grid.Row="3"
+               Grid.Column="0"
+               Margin="0,10,0,10">
+            Initial licit
+        </Label>
+        <TextBox Grid.Row="3"
+                 Grid.Column="1"
+                 Margin="0,0,0,10"
+                 Grid.ColumnSpan="2"
+                 IsEnabled="{Binding NewItem}"
+                 Text="{Binding InitLicit}">
+        </TextBox>
 
-        <CheckBox Grid.Row="5"
-                  Grid.Column="2"
-                  IsChecked="{Binding DeleteImages}"
-                  Margin="0,10,0,10">
-            Delete current images
-        </CheckBox>
+        <Label Grid.Row="4"
+               Grid.Column="0"
+               Margin="0,10,0,10">
+            Expiration date:
+        </Label>
+        <!--Minimum="{Binding Source={x:Static sys:DateTime.Today}}"-->
+        <xctk:DateTimePicker Grid.Row="4"
+                             Grid.Column="1"
+                             Margin="0,0,0,10"
+                             IsEnabled="{Binding NewItem}"
+                             Text="{Binding ExpirationText}">
+        </xctk:DateTimePicker>
 
-        <StackPanel Grid.Row="6"
+        <StackPanel Grid.Row="7"
                     Grid.ColumnSpan="3"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Margin="0,0,10,0"
+                    IsEnabled="{Binding Closeable}"
+                    Command="{Binding SaveCommand}">
+                Close auction
+            </Button>
+            <Button Margin="0,0,10,0"
+                    IsEnabled="{Binding NewItem}"
                     Command="{Binding SaveCommand}">
                 Save
             </Button>

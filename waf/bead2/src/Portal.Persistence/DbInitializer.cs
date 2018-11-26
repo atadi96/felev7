@@ -111,12 +111,19 @@ namespace Portal.Persistence
         {
             Bid bid = new Bid
             {
-                Amout = 10,
+                Amount = 10,
                 User = Users.CheapBuyer,
                 Item = Items.Farewell
             };
+            Bid bid2 = new Bid()
+            {
+                Amount = 5_000,
+                User = Users.CheapBuyer,
+                Item = Items.Amp
+            };
 
             portalContext.Bids.Add(bid);
+            portalContext.Bids.Add(bid2);
             portalContext.SaveChanges();
         }
 
@@ -171,7 +178,7 @@ namespace Portal.Persistence
             {
                 Category = Categories.Instrument,
                 Name = "Behringer amplifier",
-                Description = "Behringer 15W amplifier, second owner, line input is boken",
+                Description = "Behringer 15W amplifier, second owner, line input is broken",
                 Expiration = DateTime.Now.AddDays(-1),
                 InitLicit = 5_000,
                 Publisher = Publishers.Instrument,

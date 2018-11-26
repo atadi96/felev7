@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Hirportal.Persistence.DTO;
-using Hirportal.WPF.Persistence;
+using Portal.Persistence.DTO;
+using Portal.WPF.Persistence;
 
-namespace Hirportal.WPF.Model
-{
+namespace Portal.WPF.Model
+{ /*
     public class NewsModel : INewsModel
     {
         private INewsPersistence newsPersistence;
@@ -19,17 +19,36 @@ namespace Hirportal.WPF.Model
             this.newsPersistence = newsPersistence;
         }
 
-        public IReadOnlyList<ArticlePreviewDTO> ArticlePreviews { get; private set; }
+        public IReadOnlyList<ItemPreviewDTO> ItemPreviews { get; private set; }
 
-        public AuthorDTO LoggedInUser { get; private set; }
+        public PublisherDTO LoggedInUser { get; private set; }
 
         public bool IsBusy { get; private set; }
 
-        public EventHandler<ModelAsyncCompletedEventArgs<IReadOnlyList<ArticlePreviewDTO>>> LoadPreviewsAsyncFinished { get; set; }
-        public EventHandler<ModelAsyncCompletedEventArgs<ArticleDTO>> ArticleLoadFinished { get; set; }
-        public EventHandler<ModelAsyncCompletedEventArgs<bool>> ArticleDeleteFinished { get; set; }
+        public EventHandler<ModelAsyncCompletedEventArgs<IReadOnlyList<ItemPreviewDTO>>> LoadPreviewsAsyncFinished { get; set; }
+        public EventHandler<ModelAsyncCompletedEventArgs<ItemDataDTO>> ArticleLoadFinished { get; set; }
+        public EventHandler<ModelAsyncCompletedEventArgs<bool>> ItemCloseFinished { get; set; }
         public EventHandler<ModelAsyncCompletedEventArgs<AuthorDTO>> LoginAsyncFinished { get; set; }
         public EventHandler<ModelAsyncCompletedEventArgs<bool>> LogoutAsyncFinished { get; set; }
+
+        private class Lock
+        {
+            public Lock(NewsModel model)
+            {
+                lock (model.lockObj)
+                {
+                    if (model.IsBusy)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        IsBusy = true;
+                        return true;
+                    }
+                }
+            }
+        }
 
         private bool AcquireBusy()
         {
@@ -68,7 +87,7 @@ namespace Hirportal.WPF.Model
             throw new NotImplementedException();
         }
 
-        public void GetArticleAsync(int id)
+        public void GetItemAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -92,5 +111,5 @@ namespace Hirportal.WPF.Model
         {
             throw new NotImplementedException();
         }
-    }
+    } */
 }

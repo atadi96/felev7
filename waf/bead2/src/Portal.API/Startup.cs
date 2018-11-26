@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Portal.API.Services;
 using Portal.Persistence;
 
 namespace Portal.API
@@ -44,6 +45,8 @@ namespace Portal.API
                 //.AddRoles<IdentityRole<int>>()
                 .AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddTransient<PublishingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +61,8 @@ namespace Portal.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseMvc();
 
             var portalContext = app.ApplicationServices.GetRequiredService<PortalContext>();

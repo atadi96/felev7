@@ -44,7 +44,7 @@ namespace Portal.MVC.Services
                     new ItemPreviewViewModel(
                         item,
                         item.Bids
-                            .Select(bid => bid.Amout)
+                            .Select(bid => bid.Amount)
                             .DefaultIfEmpty(item.InitLicit)
                             .Max()
                     )
@@ -60,7 +60,7 @@ namespace Portal.MVC.Services
                 .Select(item => new ItemPreviewViewModel(
                     item,
                     item.Bids
-                        .Select(bid => bid.Amout)
+                        .Select(bid => bid.Amount)
                         .DefaultIfEmpty(item.InitLicit)
                         .Max()
                 ));
@@ -96,14 +96,14 @@ namespace Portal.MVC.Services
                     Item = new ItemPreviewViewModel(
                         item,
                         item.Bids
-                            .Select(bid => bid.Amout)
+                            .Select(bid => bid.Amount)
                             .DefaultIfEmpty(item.InitLicit)
                             .Max()
                     ),
                     OwnBid = item.Bids
                         .Where(bid => bid.User == currentUser)
-                        .OrderByDescending(bid => bid.Amout)
-                        .Select(bid => bid.Amout)
+                        .OrderByDescending(bid => bid.Amount)
+                        .Select(bid => bid.Amount)
                         .First()
                 }
                 );
@@ -128,8 +128,8 @@ namespace Portal.MVC.Services
                         InitLicit = item.InitLicit,
                         CurrentLicit =
                             item.Bids
-                                .OrderByDescending(bid => bid.Amout)
-                                .Select(bid => (int?)bid.Amout)
+                                .OrderByDescending(bid => bid.Amount)
+                                .Select(bid => (int?)bid.Amount)
                                 .FirstOrDefault()
                     }
                 )
@@ -146,7 +146,7 @@ namespace Portal.MVC.Services
             
             Bid newBid =  new Bid 
             {
-                Amout = amount,
+                Amount = amount,
                 Item = bidItem,
                 User = currentUser
             };
@@ -154,8 +154,8 @@ namespace Portal.MVC.Services
             int? currentBid = portalContext.Bids
                 .Include(bid => bid.Item)
                 .Where(bid => bid.Item == bidItem)
-                .OrderByDescending(bid => bid.Amout)
-                .Select(bid => (int?)bid.Amout)
+                .OrderByDescending(bid => bid.Amount)
+                .Select(bid => (int?)bid.Amount)
                 .FirstOrDefault();
             if (
                 (currentBid is null && amount == bidItem.InitLicit) ||
