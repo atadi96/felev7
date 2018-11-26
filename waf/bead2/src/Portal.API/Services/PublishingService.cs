@@ -24,11 +24,16 @@ namespace Portal.API.Services
 
         public async Task<bool> CloseItem(int itemId)
         {
+            var user = await userManager.GetUserAsync(httpContext.User);
             var item =
                 context.Items
                     .Include(it => it.Bids)
-                    .Where(it => it.Id == itemId && it.Bids.Any())
-                    .FirstOrDefault();
+                    .Where(
+                        it => it.Id == itemId &&
+                        it.Publisher == user &&
+                        it.Bids.Any() &&
+                        it.Expiration > DateTime.Now
+                    ).FirstOrDefault();
             if (item is null)
             {
                 return false;
