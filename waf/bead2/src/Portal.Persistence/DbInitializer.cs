@@ -121,9 +121,16 @@ namespace Portal.Persistence
                 User = Users.CheapBuyer,
                 Item = Items.Amp
             };
+            Bid bid3 = new Bid()
+            {
+                Amount = 40_000,
+                User = Users.CheapBuyer,
+                Item = Items.LP100
+            };
 
             portalContext.Bids.Add(bid);
             portalContext.Bids.Add(bid2);
+            portalContext.Bids.Add(bid3);
             portalContext.SaveChanges();
         }
 

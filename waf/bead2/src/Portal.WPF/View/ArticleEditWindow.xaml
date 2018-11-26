@@ -25,6 +25,7 @@
             <RowDefinition Height="120" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <Label>Name:</Label>
@@ -94,13 +95,26 @@
                              Text="{Binding ExpirationText}">
         </xctk:DateTimePicker>
 
+        <DataGrid VerticalContentAlignment="Stretch"
+                  ItemsSource="{Binding Bids}"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  Grid.Row="5"
+                  Grid.ColumnSpan="3">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Buyer name" Binding="{Binding BuyerName}" Width="*" />
+                <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" Width="*"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding PutDate}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
         <StackPanel Grid.Row="7"
                     Grid.ColumnSpan="3"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Margin="0,0,10,0"
                     IsEnabled="{Binding Closeable}"
-                    Command="{Binding SaveCommand}">
+                    Command="{Binding CloseItemCommand}">
                 Close auction
             </Button>
             <Button Margin="0,0,10,0"

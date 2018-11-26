@@ -8,7 +8,7 @@ using Portal.Persistence.DTO;
 
 namespace Portal.WPF.Persistence
 {
-    public class NewsServicePersistence : INewsPersistence
+    public class PortalServicePersistence : IPortalPersistence
     {
         private const string API_ITEMS = "api/items/";
 
@@ -18,7 +18,7 @@ namespace Portal.WPF.Persistence
 
         public bool IsLoggedOn { get; private set; }
 
-        public NewsServicePersistence(string baseAddress)
+        public PortalServicePersistence(string baseAddress)
         {
             _client = new HttpClient(); // a szolgáltatás kliense
             _client.BaseAddress = new Uri(baseAddress); // megadjuk neki a címet

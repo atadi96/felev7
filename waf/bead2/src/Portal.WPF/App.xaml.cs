@@ -17,7 +17,7 @@ namespace Portal.WPF
     /// </summary>
     public partial class App : Application
     {
-        private INewsPersistence persistence;
+        private IPortalPersistence persistence;
         private LoginViewModel loginViewModel;
         private LoginWindow loginWindow;
         private MainViewModel mainViewModel;
@@ -39,8 +39,7 @@ namespace Portal.WPF
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
-            persistence = new NewsServicePersistence("http://localhost:5000/");
-            //persistence = new MockupPersistence();
+            persistence = new PortalServicePersistence("http://localhost:5000/");
             loginViewModel = new LoginViewModel(persistence);
             loginViewModel.ExitApplication += ExitApplication;
             loginViewModel.LoginFailed += LoginViewModel_LoginFailed;
@@ -54,7 +53,7 @@ namespace Portal.WPF
 
         private void LoginViewModel_LoginFailed(object sender, EventArgs e)
         {
-            MessageBox.Show("Login failed!", "News author login");
+            MessageBox.Show("Login failed!", "Publisher login");
         }
 
         private void LoginSuccess(object sender, PublisherDTO author)
@@ -74,7 +73,7 @@ namespace Portal.WPF
 
         private void ViewModel_MessageApplication(object sender, MessageEventArgs e)
         {
-            MessageBox.Show(e.Message, "News portal", MessageBoxButton.OK);
+            MessageBox.Show(e.Message, "Auction portal", MessageBoxButton.OK);
         }
 
         private void ExitApplication(object sender, EventArgs e)

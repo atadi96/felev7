@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Portal.WPF"
         xmlns:vm="clr-namespace:Portal.WPF.ViewModel"
         mc:Ignorable="d"
-        Title="News - Your articles" Height="450" Width="800"
+        Title="Auction portal - Your items" Height="450" Width="800"
         IsEnabled="{Binding IsLoaded}">
     <!--<Window.Resources>
         <DataTemplate DataType="{x:Type vm:MainViewModel}"> -->
@@ -24,7 +24,7 @@
                             <Setter Property="Margin" Value="15,0,0,0"/>
                         </Style>
                     </StackPanel.Resources>
-                    <Label Content="{Binding Author.Name}" />
+                    <Label Content="{Binding Publisher.Name}" />
                     <Button Command="{Binding CreateArticleCommand}">Publish new item</Button>
                     <Button Command="{Binding ExitCommand}">Logout</Button>
                 </StackPanel>

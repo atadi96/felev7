@@ -87,10 +87,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ArticleEventArgs.cs" />
-    <Compile Include="Model\INewsModel.cs" />
-    <Compile Include="Model\ModelAsyncCompletedEventArgs.cs" />
-    <Compile Include="Model\NewsModel.cs" />
     <Compile Include="Persistence\INewsPersistence.cs" />
     <Compile Include="Persistence\MockupPersistence.cs" />
     <Compile Include="Persistence\PersistenceUnavailableException.cs" />

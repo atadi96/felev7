@@ -8,7 +8,7 @@ namespace Portal.WPF.ViewModel
 
     public class LoginViewModel : ViewModelBase
     {
-        private INewsPersistence _model;
+        private IPortalPersistence _model;
 
         public DelegateCommand ExitCommand { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Portal.WPF.ViewModel
 
         public event EventHandler LoginFailed;
 
-        public LoginViewModel(INewsPersistence model)
+        public LoginViewModel(IPortalPersistence model)
         {
             _model = model ?? throw new ArgumentNullException(nameof(model));
             UserName = String.Empty;

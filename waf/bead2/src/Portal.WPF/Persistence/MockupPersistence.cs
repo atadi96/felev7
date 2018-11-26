@@ -7,7 +7,7 @@ using Portal.Persistence.DTO;
 
 namespace Portal.WPF.Persistence
 {
-    class MockupPersistence : INewsPersistence
+    class MockupPersistence : IPortalPersistence
     {
         public bool IsLoggedOn => throw new NotImplementedException();
 

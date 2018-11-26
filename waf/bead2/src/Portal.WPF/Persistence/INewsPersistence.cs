@@ -5,7 +5,7 @@ using Portal.Persistence.DTO;
 
 namespace Portal.WPF.Persistence
 {
-    public interface INewsPersistence
+    public interface IPortalPersistence
     {
         bool IsLoggedOn { get; }
 

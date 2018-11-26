@@ -1,5 +1,4 @@
-﻿using Portal.WPF.Model;
-using Portal.WPF.Persistence;
+﻿using Portal.WPF.Persistence;
 using Portal.Persistence.DTO;
 using System;
 using System.Collections.ObjectModel;
@@ -15,7 +14,7 @@ namespace Portal.WPF.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private INewsPersistence _model;
+        private IPortalPersistence _model;
         private ObservableCollection<ItemPreviewDTO> _itemPreviews;
         private bool _isLoaded;
         private PublisherDTO _publisher;
@@ -60,8 +59,6 @@ namespace Portal.WPF.ViewModel
 
         public DelegateCommand EditArticleCommand { get; private set; }
 
-        public DelegateCommand DeleteArticleCommand { get; private set; }
-
         public DelegateCommand ExitCommand { get; private set; }
 
         public event EventHandler ExitApplication;
@@ -70,13 +67,11 @@ namespace Portal.WPF.ViewModel
 
         public event EventHandler<int> EditArticle;
 
-        public MainViewModel(INewsPersistence model, PublisherDTO author)
+        public MainViewModel(IPortalPersistence model, PublisherDTO author)
         {
             _model = model ?? throw new ArgumentNullException("model");
             _isLoaded = false;
             _publisher = author;
-
-            DeleteArticleCommand = new DelegateCommand(param => DeleteArticle((int)param));
 
             EditArticleCommand = new DelegateCommand(param => EditArticleAction((int)param));
 
@@ -84,25 +79,6 @@ namespace Portal.WPF.ViewModel
 
             CreateArticleCommand = new DelegateCommand(_ => CreateArticleAction());
 
-            Refresh();
-        }
-
-        private async void DeleteArticle(int articleID)
-        {
-            IsLoaded = false;
-            var x = MessageBox.Show("Are you sure you want to delete the article?", "Delete article", MessageBoxButton.YesNo);
-            if (x == MessageBoxResult.Yes)
-            {
-                try
-                {
-                    bool result = await _model.CloseItemAsync(articleID);
-                    MessageBox.Show(result ? "Article deleted successfully." : "Article delete failed!");
-                }
-                catch (PersistenceUnavailableException ex)
-                {
-                    PersistenceError(ex);
-                }
-            }
             Refresh();
         }
 

@@ -92,6 +92,7 @@ namespace Portal.API.Services
                                     {
                                         Amount = bid.Amount,
                                         BuyerName = bid.User.Name,
+                                        PutDate = bid.PutDate
                                     }
                                 )
                                 .ToArray(),
