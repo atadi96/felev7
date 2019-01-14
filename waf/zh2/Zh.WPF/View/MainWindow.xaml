@@ -1,0 +1,54 @@
+﻿<Window x:Class="Portal.WPF.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Portal.WPF"
+        xmlns:vm="clr-namespace:Portal.WPF.ViewModel"
+        mc:Ignorable="d"
+        Title="Auction portal - Your items" Height="450" Width="800"
+        IsEnabled="{Binding IsLoaded}">
+    <!--<Window.Resources>
+        <DataTemplate DataType="{x:Type vm:MainViewModel}"> -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="15,0,0,0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Label Content="{Binding Publisher.Name}" />
+                    <Button Command="{Binding CreateArticleCommand}">Publish new item</Button>
+                    <Button Command="{Binding ExitCommand}">Logout</Button>
+                </StackPanel>
+                <DataGrid VerticalContentAlignment="Stretch" ItemsSource="{Binding ItemPreviews}" IsReadOnly="True"
+                          AutoGenerateColumns="False"
+                          Grid.Row="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="*"/>
+                        <DataGridTextColumn Header="Current bid" Binding="{Binding CurrentBid}" Width="*"/>
+                        <DataGridTemplateColumn Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, 
+                                                              Path=DataContext.EditArticleCommand}"
+                                            CommandParameter="{Binding Id}">
+                                        Details
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        <!--</DataTemplate>
+    </Window.Resources> -->
+</Window>
