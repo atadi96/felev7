@@ -6,7 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Portal.Persistence
+namespace Zh.Persistence
 {
     public enum ImageSize
     {
@@ -22,7 +22,7 @@ namespace Portal.Persistence
 
         //[ForeignKey("Article")]
         [Required]
-        public Item1 Item { get; set; }
+        public Item Item { get; set; }
         [Required]
         public byte[] ImageData { get; set; }
 
