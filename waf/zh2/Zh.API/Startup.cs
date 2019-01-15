@@ -58,8 +58,23 @@ namespace Zh.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseMvc();
+
+            var zhContext = app.ApplicationServices.GetRequiredService<ZhContext>();
+
+            if(Configuration.GetValue<bool>("seed"))
+            {
+                zhContext.Database.EnsureDeleted();
+            }
+
+            zhContext.Database.EnsureCreated();
+
+            var userManager = app.ApplicationServices.GetRequiredService<UserManager<DbUser>>();
+            var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole<int>>>();
+
+            DbInitializer.Initialize(zhContext, userManager, roleManager);
         }
     }
 }

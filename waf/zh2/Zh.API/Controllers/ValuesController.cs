@@ -34,14 +34,16 @@ namespace Zh.API.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] ItemDTO value)
+        public InsertionResultDTO Post([FromBody] ItemDTO value)
         {
+            throw new NotImplementedException();
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public InsertionResultDTO Put(int id, [FromBody] ItemDTO value)
         {
+            throw new NotImplementedException();
         }
 
         // DELETE api/values/5

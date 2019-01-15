@@ -1,4 +1,4 @@
-namespace Portal.Persistence.DTO
+namespace Zh.Persistence.DTO
 {
     public class InsertionResultDTO
     {
