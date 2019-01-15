@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Portal.Persistence.DTO;
-using Portal.WPF.Persistence;
+using Zh.Persistence.DTO;
+using Zh.WPF.Persistence;
 using Microsoft.Win32;
 using System.Windows.Data;
 using System.Windows;
 
-namespace Portal.WPF.ViewModel
+namespace Zh.WPF.ViewModel
 {
     class ArticleEditViewModel : ViewModelBase
     {
@@ -33,23 +33,6 @@ namespace Portal.WPF.ViewModel
             }
         }
 
-        public class BidDumbWPF
-        {
-            public string BuyerName { get; set; }
-            public int Amount { get; set; }
-            public string PutDate { get; set; }
-
-            public static BidDumbWPF FromDTO(BidDTO bid)
-            {
-                return new BidDumbWPF()
-                {
-                    Amount = bid.Amount,
-                    BuyerName = bid.BuyerName,
-                    PutDate = bid.PutDate.ToShortDateString() + " " + bid.PutDate.ToShortTimeString()
-                };
-            }
-        }
-
         private IPortalPersistence model;
         private bool newPost;
 
@@ -61,7 +44,7 @@ namespace Portal.WPF.ViewModel
             private set { isReady = value; OnPropertyChanged(); }
         }
 
-        private ItemDataDTO itemData;
+        private ItemDTO itemData;
 
         private string title = "Loading...";
         public string Title
@@ -77,57 +60,26 @@ namespace Portal.WPF.ViewModel
             private set { newItem = value; OnPropertyChanged(); }
         }
 
-        public bool Closeable =>
-            !NewItem &&
-            itemData.Expiration > DateTime.Now &&
-            (itemData?.Bids?.Any() ?? false);
-
-        public string Name
-        {
-            get => itemData.Name;
-            set { itemData.Name = value; OnPropertyChanged(); }
-        }
-
-        public string Description
-        {
-            get => itemData.Description;
-            set { itemData.Description = value; OnPropertyChanged(); }
-        }
-
         public byte[] Image
         {
             get => itemData.Image;
             set { itemData.Image = value; OnPropertyChanged(); }
         }
 
-        public ReadOnlyObservableCollection<CategoryItem> Categories { get; private set; }
-
-        public string Category
+        private ObservableCollection<ThingDTO> things;
+        public ObservableCollection<ThingDTO> Things
         {
-            get => itemData.Category;
-            set { itemData.Category = value; OnPropertyChanged(); }
-        }
-
-        public int InitLicit
-        {
-            get => itemData.InitLicit;
-            set { itemData.InitLicit = value; OnPropertyChanged(); }
-        }
-
-        private ObservableCollection<BidDumbWPF> bids;
-        public ObservableCollection<BidDumbWPF> Bids
-        {
-            get => bids;
+            get => things;
             private set
             {
-                if (bids != value)
+                if (things != value)
                 {
-                    bids = value;
+                    things = value;
                     OnPropertyChanged();
                 }
             }
         }
-
+        /*
         public string ExpirationText
         {
             get
@@ -143,7 +95,7 @@ namespace Portal.WPF.ViewModel
                 }
             }
         }
-
+        */
         public DelegateCommand BackCommand { get; private set; }
 
         public EventHandler BackEvent { get; set; }
@@ -158,7 +110,7 @@ namespace Portal.WPF.ViewModel
         {
             this.model = model;
             newPost = itemId == null;
-            itemData = new ItemDataDTO();
+            itemData = new ItemDTO();
             BackCommand = new DelegateCommand(_ => BackEvent?.Invoke(this, EventArgs.Empty));
             SaveCommand = new DelegateCommand(_ => Save());
             AddImageCommand = new DelegateCommand(_ => UploadImage());
@@ -233,19 +185,11 @@ namespace Portal.WPF.ViewModel
 
         private async void FetchArticle(int? itemId = null)
         {
-            var categories = await model.GetCategories();
-            Categories =
-                    new ReadOnlyObservableCollection<CategoryItem>(
-                        new ObservableCollection<CategoryItem>(
-                            categories.Select(catName => new CategoryItem() { Name = catName })
-                        )
-                    );
             if (itemId is null)
             {
                 Title = "Publish new item";
-                itemData.Expiration = DateTime.Now;
-                OnPropertyChanged(nameof(ExpirationText));
-                OnPropertyChanged(nameof(Closeable));
+                itemData.CreateDate = DateTime.Now;
+
                 NewItem = true;
                 IsReady = true;
             }
@@ -254,16 +198,16 @@ namespace Portal.WPF.ViewModel
                 try
                 {
                     itemData = await model.GetItemAsync(itemId.Value);
-                    Bids = new ObservableCollection<BidDumbWPF>(itemData.Bids.Select(bid => BidDumbWPF.FromDTO(bid)));
+                    Things = new ObservableCollection<ThingDTO>(itemData.Things);
                     NewItem = false;
-                    Title = "Details - " + itemData.Name;
-                    OnPropertyChanged(nameof(Name));
-                    OnPropertyChanged(nameof(Category));
-                    OnPropertyChanged(nameof(Description));
-                    OnPropertyChanged(nameof(InitLicit));
-                    OnPropertyChanged(nameof(Image));
-                    OnPropertyChanged(nameof(ExpirationText));
-                    OnPropertyChanged(nameof(Closeable));
+                    //Title = "Details - " + itemData.Name;
+                    //OnPropertyChanged(nameof(Name));
+                    //OnPropertyChanged(nameof(Category));
+                    //OnPropertyChanged(nameof(Description));
+                    //OnPropertyChanged(nameof(InitLicit));
+                    //OnPropertyChanged(nameof(Image));
+                    //OnPropertyChanged(nameof(ExpirationText));
+                    //OnPropertyChanged(nameof(Closeable));
                     IsReady = true;
                 }
                 catch (PersistenceUnavailableException ex)

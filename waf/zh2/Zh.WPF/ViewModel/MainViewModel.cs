@@ -1,5 +1,5 @@
-﻿using Portal.WPF.Persistence;
-using Portal.Persistence.DTO;
+﻿using Zh.WPF.Persistence;
+using Zh.Persistence.DTO;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
-namespace Portal.WPF.ViewModel
+namespace Zh.WPF.ViewModel
 {
     /// <summary>
     /// A nézetmodell típusa.

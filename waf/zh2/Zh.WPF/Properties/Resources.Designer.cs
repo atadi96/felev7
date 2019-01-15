@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Portal.WPF.Properties
+namespace Zh.WPF.Properties
 {
 
 

@@ -1,4 +1,4 @@
-﻿<Window x:Class="Portal.WPF.View.ArticleEditWindow"
+﻿<Window x:Class="Zh.WPF.View.ArticleEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,87 +10,54 @@
         Title="{Binding Title}"
         Width="800"
         IsEnabled="{Binding IsReady}">
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="120" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        
+
+    <StackPanel>
+
         <Label>Name:</Label>
-        <TextBox Grid.Column="1"
-                 IsEnabled="{Binding NewItem}"
+        <TextBox IsEnabled="{Binding NewItem}"
                  Margin="0,0,0,10"
-                 Text="{Binding Name}"
-                 Grid.ColumnSpan="2"/>
+                 Text="{Binding Name}"/>
         
-        <Label Grid.Row="1">Description:</Label>
-        <TextBox Grid.Row="1"
-                 Grid.Column="1"
-                 Margin="0,0,0,10"
+        <Label>Description:</Label>
+        <TextBox Margin="0,0,0,10"
                  IsEnabled="{Binding NewItem}"
                  Text="{Binding Description}"
                  Grid.ColumnSpan="2" />
         
-        <Label Grid.Row="2">Category:</Label>
-        <ComboBox Grid.Row="2"
-                 Grid.Column="1"
-                 Margin="0,0,0,10"
-                 Grid.ColumnSpan="2"
-                 IsEnabled="{Binding NewItem}"
-                 ItemsSource="{Binding Categories}"
-                 DisplayMemberPath="Name"
-                 SelectedValuePath="Name"
-                 SelectedValue="{Binding Category}"/>
+        <Label>Category:</Label>
+        <ComboBox Margin="0,0,0,10"
+                  IsEnabled="{Binding NewItem}"
+                  ItemsSource="{Binding Categories}"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Name"
+                  SelectedValue="{Binding Category}"/>
 
-        <Label Grid.Row="5">Image</Label>
+        <Label>Image</Label>
         <Image Source="{Binding Image}"
                MaxWidth="100"
                MaxHeight="100"
-               Margin="0,10,0,0"
-               Grid.Row="5"
-               Grid.Column="1"/>
+               Margin="0,10,0,0"/>
 
-        <Label Grid.Row="6">
+        <Label>
             <Button Command="{Binding AddImageCommand}"
                     IsEnabled="{Binding NewItem}">
                 Add new image
             </Button>
         </Label>
 
-        <Label Grid.Row="3"
-               Grid.Column="0"
-               Margin="0,10,0,10">
+        <Label Margin="0,10,0,10">
             Initial licit
         </Label>
-        <TextBox Grid.Row="3"
-                 Grid.Column="1"
-                 Margin="0,0,0,10"
-                 Grid.ColumnSpan="2"
+        <TextBox Margin="0,0,0,10"
                  IsEnabled="{Binding NewItem}"
                  Text="{Binding InitLicit}">
         </TextBox>
 
-        <Label Grid.Row="4"
-               Grid.Column="0"
-               Margin="0,10,0,10">
+        <Label Margin="0,10,0,10">
             Expiration date:
         </Label>
         <!--Minimum="{Binding Source={x:Static sys:DateTime.Today}}"-->
-        <xctk:DateTimePicker Grid.Row="4"
-                             Grid.Column="1"
-                             Margin="0,0,0,10"
+        <xctk:DateTimePicker Margin="0,0,0,10"
                              IsEnabled="{Binding NewItem}"
                              Text="{Binding ExpirationText}">
         </xctk:DateTimePicker>
@@ -98,9 +65,7 @@
         <DataGrid VerticalContentAlignment="Stretch"
                   ItemsSource="{Binding Bids}"
                   IsReadOnly="True"
-                  AutoGenerateColumns="False"
-                  Grid.Row="5"
-                  Grid.ColumnSpan="3">
+                  AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Buyer name" Binding="{Binding BuyerName}" Width="*" />
                 <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" Width="*"/>
@@ -108,9 +73,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="7"
-                    Grid.ColumnSpan="3"
-                    Orientation="Horizontal"
+        <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Margin="0,0,10,0"
                     IsEnabled="{Binding Closeable}"
@@ -127,5 +90,5 @@
                 Back
             </Button>
         </StackPanel>
-    </Grid>
+    </StackPanel>
 </Window>

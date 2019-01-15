@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Portal.Persistence.DTO;
+using Zh.Persistence.DTO;
 
-namespace Portal.WPF.Persistence
+namespace Zh.WPF.Persistence
 {
     public interface IPortalPersistence
     {
         bool IsLoggedOn { get; }
 
-        Task<IEnumerable<string>> GetCategories();
-
         Task<IEnumerable<ItemPreviewDTO>> GetUserItemsAsync();
 
-        Task<ItemDataDTO> GetItemAsync(int itemId);
+        Task<ItemDTO> GetItemAsync(int itemId);
 
-        Task<InsertionResultDTO> InsertItemAsync(ItemDataDTO article);
+        Task<InsertionResultDTO> InsertItemAsync(ItemDTO item);
 
-        Task<bool> CloseItemAsync(int articleID);
+        Task<InsertionResultDTO> UpdateItemAsync(int itemId, ItemDTO item);
+
+        Task<bool> CloseItemAsync(int itemId);
 
         Task<PublisherDTO> LoginAsync(string userName, string userPassword);
 

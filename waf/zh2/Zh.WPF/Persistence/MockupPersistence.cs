@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Portal.Persistence.DTO;
-
-namespace Portal.WPF.Persistence
+using Zh.Persistence.DTO;
+/*
+namespace Zh.WPF.Persistence
 {
     class MockupPersistence : IPortalPersistence
     {
@@ -47,3 +47,4 @@ namespace Portal.WPF.Persistence
         }
     }
 }
+*/

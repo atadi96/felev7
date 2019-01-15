@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using Portal.Persistence.DTO;
+using Zh.Persistence.DTO;
 
-namespace Portal.WPF.Persistence
+namespace Zh.WPF.Persistence
 {
     public class PortalServicePersistence : IPortalPersistence
     {
@@ -47,7 +47,7 @@ namespace Portal.WPF.Persistence
 
         }
 
-        public async Task<ItemDataDTO> GetItemAsync(int itemId)
+        public async Task<ItemDTO> GetItemAsync(int itemId)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace Portal.WPF.Persistence
                 }
                 else if (response.IsSuccessStatusCode)
                 {
-                    return (await response.Content.ReadAsAsync<ItemDataDTO>());
+                    return (await response.Content.ReadAsAsync<ItemDTO>());
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace Portal.WPF.Persistence
             }
         }
 
-        public async Task<InsertionResultDTO> InsertItemAsync(ItemDataDTO itemDTO)
+        public async Task<InsertionResultDTO> InsertItemAsync(ItemDTO itemDTO)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace Portal.WPF.Persistence
             }
         }
 
-        public async Task<Boolean> LogoutAsync()
+        public async Task<bool> LogoutAsync()
         {
             try
             {
@@ -140,9 +140,20 @@ namespace Portal.WPF.Persistence
             }
         }
 
-        public async Task<IEnumerable<string>> GetCategories()
+        public async Task<InsertionResultDTO> UpdateItemAsync(int itemId, ItemDTO item)
         {
-            return new[] { "Furniture", "Instrument", "Other" };
+            try
+            {
+                using (HttpResponseMessage response = await _client.PutAsJsonAsync(API_ITEMS + itemId, item))
+                { // az értékeket azonnal JSON formátumra alakítjuk
+                    var result = await response.Content.ReadAsAsync<InsertionResultDTO>();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new PersistenceUnavailableException(ex);
+            }
         }
     }
 }

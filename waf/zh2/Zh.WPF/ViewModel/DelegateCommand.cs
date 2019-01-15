@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Portal.WPF.ViewModel
+namespace Zh.WPF.ViewModel
 {
     /// <summary>
     /// Általános parancs típusa.

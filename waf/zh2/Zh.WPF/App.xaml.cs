@@ -5,12 +5,12 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Portal.WPF.Persistence;
-using Portal.WPF.ViewModel;
-using Portal.WPF.View;
-using Portal.Persistence.DTO;
+using Zh.WPF.Persistence;
+using Zh.WPF.ViewModel;
+using Zh.WPF.View;
+using Zh.Persistence.DTO;
 
-namespace Portal.WPF
+namespace Zh.WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Portal.Persistence
+namespace Zh.Persistence
 {
     public class Publisher : IdentityUser<int>
     {

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Portal.WPF.View
+namespace Zh.WPF.View
 {
     /// <summary>
     /// Interaction logic for ArticleEditWindow.xaml

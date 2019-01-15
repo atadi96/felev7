@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Controls;
-using Portal.WPF.Persistence;
-using Portal.Persistence.DTO;
+using Zh.WPF.Persistence;
+using Zh.Persistence.DTO;
 
-namespace Portal.WPF.ViewModel
+namespace Zh.WPF.ViewModel
 {
 
     public class LoginViewModel : ViewModelBase

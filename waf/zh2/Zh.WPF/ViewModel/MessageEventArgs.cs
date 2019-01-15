@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Portal.WPF.ViewModel
+namespace Zh.WPF.ViewModel
 {
     /// <summary>
     /// Üzenet eseményargumentum típusa.
