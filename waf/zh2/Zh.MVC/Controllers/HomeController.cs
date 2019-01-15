@@ -5,33 +5,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Zh.MVC.Models;
+using Zh.MVC.Services;
 
 namespace Zh.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ZhService service;
+
+        public HomeController(ZhService service)
         {
-            return View();
+            this.service = service;
         }
 
-        public IActionResult About()
+        public IActionResult Index(HomeViewModel vm)
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            return View("", vm);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
