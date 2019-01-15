@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Zh.Persistence;
+using Zh.Persistence.DTO;
 
 namespace Zh.API.Controllers
 {
@@ -10,23 +12,29 @@ namespace Zh.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly ZhContext context;
+
+        public ValuesController(ZhContext context)
+        {
+            this.context = context;
+        }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public IEnumerable<ItemPreviewDTO> Get()
         {
-            return new string[] { "value1", "value2" };
+            throw new NotImplementedException();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ItemDTO Get(int id)
         {
-            return "value";
+            throw new NotImplementedException();
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] ItemDTO value)
         {
         }
 
